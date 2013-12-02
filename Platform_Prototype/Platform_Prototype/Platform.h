@@ -13,6 +13,4 @@
 
 @property(nonatomic, strong) CCSprite *sprite;
 
--(id)initWithSprite:(CCSprite*)sprite;
-
 @end

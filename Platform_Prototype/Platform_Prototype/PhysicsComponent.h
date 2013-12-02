@@ -10,5 +10,6 @@
 #import "cocos2d.h"
 
 @interface PhysicsComponent : NSObject<CCPhysicsCollisionDelegate>
-
+@property(nonatomic, weak) id parent;
+-(id)initWithParent:(id)parent;
 @end

@@ -69,6 +69,7 @@
 
 -(void)characterRight{
     Character *character = ((Character*)_parent);
+    character.sprite.flipX = NO;
     [character.sprite.physicsBody applyForce:ccp(1000, 0)];
     NSLog(@"%f",character.sprite.physicsBody.velocity.x);
     
@@ -82,6 +83,7 @@
 
 -(void)characterLeft{
     Character *character = ((Character*)_parent);
+    character.sprite.flipX = YES;
     [character.sprite.physicsBody applyForce:ccp(-1000, 0)];
     NSLog(@"%f",character.sprite.physicsBody.velocity.x);
     
@@ -96,6 +98,10 @@
 -(void)characterDown{
     Character *character = ((Character*)_parent);
 
+}
+
+-(void)noInput{
+    Character *character = ((Character*)_parent);
 }
 
 

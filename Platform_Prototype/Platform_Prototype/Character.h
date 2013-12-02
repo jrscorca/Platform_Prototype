@@ -14,11 +14,5 @@
 
 @property(nonatomic, strong) CCSprite *sprite;
 @property(nonatomic, strong) InputComponent *input;
-@property(nonatomic, strong) PhysicsComponent *physics;
-@property(nonatomic, assign) int jumps;
-
-
-
--(id)initWithSprite:(CCSprite*)sprite;
 
 @end

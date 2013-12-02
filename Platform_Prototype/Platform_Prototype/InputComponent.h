@@ -17,7 +17,7 @@
 -(void)right;
 -(void)left;
 -(void)down;
-
+-(void)noInput;
 -(id)initWithParent:(id)parent;
 
 @end

@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F22CD063184B3CCB00B99A37 /* Mario_Mario-hd.plist in Resources */ = {isa = PBXBuildFile; fileRef = F22CD05D184B3CCB00B99A37 /* Mario_Mario-hd.plist */; };
+		F22CD064184B3CCB00B99A37 /* Mario_Mario-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD05E184B3CCB00B99A37 /* Mario_Mario-hd.png */; };
+		F22CD065184B3CCB00B99A37 /* Mario_Mario-ipadhd.plist in Resources */ = {isa = PBXBuildFile; fileRef = F22CD05F184B3CCB00B99A37 /* Mario_Mario-ipadhd.plist */; };
+		F22CD066184B3CCB00B99A37 /* Mario_Mario-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD060184B3CCB00B99A37 /* Mario_Mario-ipadhd.png */; };
+		F22CD067184B3CCB00B99A37 /* Mario_Mario.plist in Resources */ = {isa = PBXBuildFile; fileRef = F22CD061184B3CCB00B99A37 /* Mario_Mario.plist */; };
+		F22CD068184B3CCB00B99A37 /* Mario_Mario.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD062184B3CCB00B99A37 /* Mario_Mario.png */; };
+		F22CD06A184B3D5B00B99A37 /* Mario_Run_1.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD069184B3D5B00B99A37 /* Mario_Run_1.png */; };
 		F2AE6C581846ECC2000153E1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C571846ECC2000153E1 /* QuartzCore.framework */; };
 		F2AE6C5A1846ECC2000153E1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C591846ECC2000153E1 /* OpenGLES.framework */; };
 		F2AE6C5C1846ECC2000153E1 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C5B1846ECC2000153E1 /* OpenAL.framework */; };
@@ -211,6 +218,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F22CD05D184B3CCB00B99A37 /* Mario_Mario-hd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Mario_Mario-hd.plist"; path = "Resources/Mario_Mario-hd.plist"; sourceTree = "<group>"; };
+		F22CD05E184B3CCB00B99A37 /* Mario_Mario-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Mario_Mario-hd.png"; path = "Resources/Mario_Mario-hd.png"; sourceTree = "<group>"; };
+		F22CD05F184B3CCB00B99A37 /* Mario_Mario-ipadhd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Mario_Mario-ipadhd.plist"; path = "Resources/Mario_Mario-ipadhd.plist"; sourceTree = "<group>"; };
+		F22CD060184B3CCB00B99A37 /* Mario_Mario-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Mario_Mario-ipadhd.png"; path = "Resources/Mario_Mario-ipadhd.png"; sourceTree = "<group>"; };
+		F22CD061184B3CCB00B99A37 /* Mario_Mario.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Mario_Mario.plist; path = Resources/Mario_Mario.plist; sourceTree = "<group>"; };
+		F22CD062184B3CCB00B99A37 /* Mario_Mario.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mario_Mario.png; path = Resources/Mario_Mario.png; sourceTree = "<group>"; };
+		F22CD069184B3D5B00B99A37 /* Mario_Run_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mario_Run_1.png; sourceTree = "<group>"; };
 		F2AE6C541846ECC2000153E1 /* Platform_Prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Platform_Prototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2AE6C571846ECC2000153E1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		F2AE6C591846ECC2000153E1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -660,6 +674,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F22CD04E184B2F6600B99A37 /* Mario */ = {
+			isa = PBXGroup;
+			children = (
+				F22CD069184B3D5B00B99A37 /* Mario_Run_1.png */,
+				F22CD05D184B3CCB00B99A37 /* Mario_Mario-hd.plist */,
+				F22CD05E184B3CCB00B99A37 /* Mario_Mario-hd.png */,
+				F22CD05F184B3CCB00B99A37 /* Mario_Mario-ipadhd.plist */,
+				F22CD060184B3CCB00B99A37 /* Mario_Mario-ipadhd.png */,
+				F22CD061184B3CCB00B99A37 /* Mario_Mario.plist */,
+				F22CD062184B3CCB00B99A37 /* Mario_Mario.png */,
+			);
+			name = Mario;
+			sourceTree = "<group>";
+		};
 		F2AE6C4B1846ECC2000153E1 = {
 			isa = PBXGroup;
 			children = (
@@ -722,6 +750,7 @@
 		F2AE6C731846ECC2000153E1 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				F22CD04E184B2F6600B99A37 /* Mario */,
 				F2AE6C741846ECC2000153E1 /* Icon.png */,
 				F2AE6C761846ECC2000153E1 /* Icon@2x.png */,
 				F2AE6C781846ECC2000153E1 /* Icon-72.png */,
@@ -1578,20 +1607,27 @@
 			files = (
 				F2AE6C6E1846ECC2000153E1 /* Default@2x.png in Resources */,
 				F2AE6C811846ECC2000153E1 /* Icon-120.png in Resources */,
+				F22CD063184B3CCB00B99A37 /* Mario_Mario-hd.plist in Resources */,
 				F2AE6E7F1846ECC3000153E1 /* LICENSE_CCBReader.txt in Resources */,
 				F2AE6C771846ECC2000153E1 /* Icon@2x.png in Resources */,
 				F2AE6C891846ECC2000153E1 /* Icon-Small@2x.png in Resources */,
 				F2AE6C7B1846ECC2000153E1 /* Icon-72@2x.png in Resources */,
 				F2AE6C6C1846ECC2000153E1 /* Default.png in Resources */,
 				F2AE6C751846ECC2000153E1 /* Icon.png in Resources */,
+				F22CD068184B3CCB00B99A37 /* Mario_Mario.png in Resources */,
 				F2AE6C831846ECC2000153E1 /* Icon-iPad-Spotlight-iOS7@2x.png in Resources */,
+				F22CD067184B3CCB00B99A37 /* Mario_Mario.plist in Resources */,
 				F2AE6C721846ECC2000153E1 /* Default-Landscape~ipad.png in Resources */,
+				F22CD064184B3CCB00B99A37 /* Mario_Mario-hd.png in Resources */,
 				F2AE6C871846ECC2000153E1 /* Icon-Small.png in Resources */,
+				F22CD065184B3CCB00B99A37 /* Mario_Mario-ipadhd.plist in Resources */,
 				F2AE6C851846ECC2000153E1 /* Icon-Small-50.png in Resources */,
+				F22CD06A184B3D5B00B99A37 /* Mario_Run_1.png in Resources */,
 				F2AE6E681846ECC3000153E1 /* LICENSE_Kazmath.txt in Resources */,
 				F2AE6C791846ECC2000153E1 /* Icon-72.png in Resources */,
 				F2AE6DC11846ECC3000153E1 /* LICENSE_cocos2d.txt in Resources */,
 				F2AE6C701846ECC2000153E1 /* Default-568h@2x.png in Resources */,
+				F22CD066184B3CCB00B99A37 /* Mario_Mario-ipadhd.png in Resources */,
 				F2AE6C901846ECC2000153E1 /* iTunesArtwork in Resources */,
 				F2AE6C8B1846ECC2000153E1 /* Icon-Spotlight-iOS7.png in Resources */,
 				F2AE6C7F1846ECC2000153E1 /* Icon-76@2x.png in Resources */,
