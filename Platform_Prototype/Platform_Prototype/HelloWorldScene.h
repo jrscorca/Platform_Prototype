@@ -16,13 +16,16 @@
 /**
  *  The main scene
  */
-@class Character;
+@class Character, Platform;
 @interface HelloWorldScene : CCScene<CCPhysicsCollisionDelegate>{
     CCButton *buttonUp;
     CCButton *buttonDown;
     CCButton *buttonLeft;
     CCButton *buttonRight;
     Character *character1;
+    Platform *platform;
+    
+    int platformCount;
 }
 
 // -----------------------------------------------------------------------

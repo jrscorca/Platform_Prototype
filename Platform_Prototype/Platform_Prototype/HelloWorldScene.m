@@ -34,26 +34,6 @@
 
 // -----------------------------------------------------------------------
 
-
-// This method is called anytime the ball collides with something.
-// The argument names in collision delegate methods correspond to the collisionType strings set on the CCPhysicsBody objects.
--(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair ball:(CCNode *)ball wildcard:(CCNode *)other
-{
-    // Ball collisions should always be perfectly bouncy and frictionless.
-    pair.friction = 0.0;
-    pair.restitution = 1.0;
-    
-    return YES;
-}
-
-// This is called when the ball collides with a block.
--(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair ball:(CCNode *)ball block:(CCNode *)block
-{
-    [block removeFromParent];
-    
-    return YES;
-}
-
 - (id)init
 {
     // Apple recommend assigning self with supers return value
@@ -62,7 +42,7 @@
     NSAssert(self, @"Unable to create class HelloWorldScene");
     
     
-    [self setupPhysicsObjects];
+    [self setupLevel];
     [self setupHUDObjects];
     
     // done
@@ -97,40 +77,23 @@
     [self addChild:buttonRight];
 }
 
--(void)setupPhysicsObjects
+-(void)setupLevel
 {
     CCPhysicsNode *physicsNode = [CCPhysicsNode node];
     physicsNode.gravity = ccp(0.0, -300.0);
     physicsNode.collisionDelegate = self;
-    physicsNode.debugDraw = YES;
+   // physicsNode.debugDraw = YES;
     [self addChild:physicsNode];
     
-    NSString *str = @"A";
+    [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"Mario_Mario.plist"];
+    CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"Mario_Mario.png"];
+    [self addChild:spriteSheet];
     
-    CCSprite *sprite = [CCSprite spriteWithImageNamed:@"icon.png"];
-    sprite.position = ccp(280, 140);
-    CGSize size = sprite.contentSize;
-    sprite.physicsBody = [CCPhysicsBody bodyWithRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:0];
-    sprite.physicsBody.collisionGroup = str;
-    character1 = [[Character alloc] initWithSprite:sprite];
-    character1.sprite.scale = 0.75f;
-    [physicsNode addChild: character1.sprite];
-    
-    
-    
-    
-    CCSprite *platformSprite = [CCSprite spriteWithImageNamed: @"icon.png"];
-    platformSprite.position = ccp(200, 200);
-    platformSprite.rotation = 0;
-    platformSprite.scaleX = 3;
-    
-    size = platformSprite.contentSize;
-    platformSprite.physicsBody = [CCPhysicsBody bodyWithRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:0];
-    platformSprite.physicsBody.collisionGroup = str;
-    Platform *platform = [[Platform alloc] initWithSprite:platformSprite];
+    platform = [[Platform alloc] init];
     [physicsNode addChild:platform.sprite];
     
-    
+    character1 = [[Character alloc] init];
+    [physicsNode addChild: character1.sprite];
     
     CCSprite *groundSprite = [CCSprite spriteWithImageNamed: @"icon.png"];
     //sprite.positionType = CCPositionTypeNormalized;
@@ -138,45 +101,11 @@
     groundSprite.rotation = 0;
     groundSprite.scaleX = 6;
     
-    size = groundSprite.contentSize;
+    CGSize size = groundSprite.contentSize;
     groundSprite.physicsBody = [CCPhysicsBody bodyWithRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:0];
     groundSprite.physicsBody.type = CCPhysicsBodyTypeStatic;
     groundSprite.physicsBody.friction = 1.2;
     [physicsNode addChild:groundSprite];
-    
-    
-    
-    
-    
-    //        [CCPhysicsJoint connectedPivotJointWithBodyA:sprite1.physicsBody bodyB:sprite2.physicsBody anchor:CGPointMake(0, 0)];
-    
-    //CCPhysicsJoint *joint = [CCPhysicsJoint connectedPivotJointWithBodyA:sprite2.physicsBody bodyB:sprite1.physicsBody anchorA:ccp(sprite1.contentSize.width, sprite1.contentSize.height)];
-    /*
-     [self scheduleBlock:^(CCTimer *timer){
-     [sprite1 removeFromParent];
-     } delay:3.0];
-     
-     [self scheduleBlock:^(CCTimer *timer){
-     [physicsNode addChild:sprite1];
-     } delay:5.0];
-     
-     [self scheduleBlock:^(CCTimer *timer){
-     [joint invalidate];
-     } delay:7.0];
-     */
-    
-    // Add our one way segment
-    /*
-     shape = cpSpaceAddShape(space, cpSegmentShapeNew(staticBody, cpv(-160,-100), cpv(160,-100), 10.0f));
-     cpShapeSetElasticity(shape, 1.0f);
-     cpShapeSetFriction(shape, 1.0f);
-     cpShapeSetCollisionType(shape, 1);
-     cpShapeSetLayers(shape, NOT_GRABABLE_MASK);
-     
-     // We'll use the data pointer for the OneWayPlatform struct
-     platformInstance.n = cpv(0, 1); // let objects pass upwards
-     cpShapeSetUserData(shape, &platformInstance);
-     */
 }
 
 // -----------------------------------------------------------------------
@@ -221,10 +150,20 @@
     
     [self updateControls:dt];
     [self updatePositionCheck:dt];
+    
 }
 
 -(void)updatePositionCheck:(CCTime)dt{
     if (character1.sprite.position.y < -100) {
+        character1.sprite.position = ccp(200, 200);
+    }
+    if (character1.sprite.position.y > [[CCDirector sharedDirector] viewSize].height+100) {
+        character1.sprite.position = ccp(200, 200);
+    }
+    if (character1.sprite.position.x < -100) {
+        character1.sprite.position = ccp(200, 200);
+    }
+    if (character1.sprite.position.x > [[CCDirector sharedDirector] viewSize].width+100) {
         character1.sprite.position = ccp(200, 200);
     }
 }
@@ -232,14 +171,14 @@
 -(void)updateControls:(CCTime)dt{
     if(buttonUp.highlighted){
         [character1.input up];
-    }
-    
-    if(buttonRight.highlighted){
+    }else if(buttonRight.highlighted){
         [character1.input right];
-    }
-    
-    if(buttonLeft.highlighted){
+    }else if(buttonLeft.highlighted){
         [character1.input left];
+    }else if(buttonDown.highlighted){
+        [character1.input down];
+    }else{
+        [character1.input noInput];
     }
 }
 
@@ -287,11 +226,7 @@
 }
 
 -(void)upButtonTouched:(CCButton*)sender{
-    if(sender.state == CCControlStateHighlighted){
-        NSLog(@"up started");
-    }else{
-        NSLog(@"up ended");
-    }
+    NSLog(@"up ended");
 }
 
 -(void)downButtonTouched:(CCButton*)sender{
@@ -306,22 +241,28 @@
     NSLog(@"right");
 }
 
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair typeA:(CCNode *)nodeA typeB:(CCNode *)nodeB{
-    
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
+    int offset = 0;
+    if(character1.sprite.physicsBody.velocity.y<0){
+        offset =(character1.sprite.contentSize.height*character1.sprite.scaleY)/4;
+    }
+    int a = character1.sprite.position.y-((character1.sprite.contentSize.height*character1.sprite.scaleY)/2)+offset;
+    int b =platform.sprite.position.y+((platform.sprite.contentSize.height*platform.sprite.scaleY)/2);
+    if(a >= b){
+        return YES;
+    }
+    return NO;
+}
+
+-(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
     return YES;
 }
 
--(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair typeA:(CCNode *)nodeA typeB:(CCNode *)nodeB{
-    
-    return YES;
-}
-
--(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair typeA:(CCNode *)nodeA typeB:(CCNode *)nodeB{
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
     
 }
 
--(void)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair *)pair typeA:(CCNode *)nodeA typeB:(CCNode *)nodeB{
-    
+-(void)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
 }
 
 @end
