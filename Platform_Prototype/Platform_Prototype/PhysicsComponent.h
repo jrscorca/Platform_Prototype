@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
+#import "Component.h"
+@class Character, Platform;
+@interface PhysicsComponent : Component
 
-@interface PhysicsComponent : NSObject<CCPhysicsCollisionDelegate>
-@property(nonatomic, weak) id parent;
--(id)initWithParent:(id)parent;
+-(CCPhysicsBody*)createPhysicsObjectOfSize:(CGSize)size;
+-(BOOL)collisionBegin:(CCPhysicsCollisionPair *)pair character:(Character *)character platform:(Platform *)platform;
+
 @end

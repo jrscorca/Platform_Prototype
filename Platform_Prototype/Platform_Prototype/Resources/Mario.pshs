@@ -24,7 +24,7 @@
 			<key>MaxSheetSize</key>
 			<integer>4096</integer>
 			<key>NpotSize</key>
-			<string>{104, 416}</string>
+			<string>{112, 676}</string>
 			<key>Padding</key>
 			<integer>8</integer>
 			<key>PixelFormat</key>
@@ -39,6 +39,578 @@
 			<string></string>
 			<key>Sheet_Sprites_Info</key>
 			<dict>
+				<key>Mario_Idle_1</key>
+				<dict>
+					<key>DocumentSecurityImageBookmark</key>
+					<data>
+					Ym9vawwEAAAAAAQQMAAAAAAAAAAAAAAAAAAA
+					AAAAAAAAAAAAAAAAAAAAAAAAAAAA5AIAAAUA
+					AAABAQAAVXNlcnMAAAAMAAAAAQEAAGpvc2h1
+					YXNjb3JjYQcAAAABAQAARGVza3RvcAAFAAAA
+					AQEAAE1hcmlvAAAABAAAAAEBAABJZGxlEAAA
+					AAEBAABNYXJpb19JZGxlXzEucG5nGAAAAAEG
+					AAAEAAAAFAAAACgAAAA4AAAASAAAAFQAAAAI
+					AAAABAMAACnAAAAAAAAACAAAAAQDAAD49QUA
+					AAAAAAgAAAAEAwAAxfYFAAAAAAAIAAAABAMA
+					AMk3KQEAAAAACAAAAAQDAABPkikBAAAAAAgA
+					AAAEAwAAVpIpAQAAAAAYAAAAAQYAAIwAAACc
+					AAAArAAAALwAAADMAAAA3AAAAAgAAAAABAAA
+					QbhMfJkAAAAYAAAAAQIAAAEAAAAAAAAADwAA
+					AAAAAAAAAAAAAAAAAAAAAAABBQAABAAAAAMD
+					AAAIAAAABAAAAAMDAAAEAAAACAAAAAQDAAAE
+					AAAAAAAAAAQAAAADAwAA9QEAAA0AAAABAQAA
+					TWFjaW50b3NoIFNTRAAAAAgAAAAEAwAAAHCi
+					R3QAAAAIAAAAAAQAAEG1bDDgAAAAJAAAAAEB
+					AAAxMEYxRTZBOC1BQThCLTMwREQtQTUyNy1E
+					NThFODI2NTkyMDMYAAAAAQIAAIEAAAABAAgA
+					7xcAAAEACAAAAAAAAAAAAAEAAAABAQAALwAA
+					AAQAAAADAwAAAAEAAMgAAAABAgAAY2MwNjVh
+					NjBjMzc2NGYwZDhlMTZjYzkzNTc2YjIwOGZm
+					YzgyYjBkNjswMDAwMDAwMDswMDAwMDAwMDsw
+					MDAwMDAwMDAwMDAwMDIwO2NvbS5hcHBsZS5h
+					cHAtc2FuZGJveC5yZWFkLXdyaXRlOzAwMDAw
+					MDAxOzAxMDAwMDAyOzAwMDAwMDAwMDEyOTky
+					NTY7L3VzZXJzL2pvc2h1YXNjb3JjYS9kZXNr
+					dG9wL21hcmlvL2lkbGUvbWFyaW9faWRsZV8x
+					LnBuZwDwAAAA/v///wEAAAAAAAAAEwAAAAQQ
+					AABsAAAAAAAAAAUQAADsAAAAAAAAABAQAAAc
+					AQAAAAAAAEAQAAAMAQAAAAAAAFQQAABEAQAA
+					AAAAAFUQAABQAQAAAAAAAFYQAAA8AQAAAAAA
+					AAIgAAD8AQAAAAAAABAgAAB4AQAAAAAAABEg
+					AACwAQAAAAAAABIgAACQAQAAAAAAABMgAACg
+					AQAAAAAAACAgAADcAQAAAAAAADAgAAA8AQAA
+					AAAAAAHAAABcAQAAAAAAABHAAAAUAAAAAAAA
+					ABLAAABsAQAAAAAAABDQAAAIAgAAAAAAAIDw
+					AAAUAgAAAAAAAA==
+					</data>
+					<key>IsSHSprite</key>
+					<true/>
+					<key>PhysicProperties</key>
+					<dict>
+						<key>AngularDamping</key>
+						<real>0.0</real>
+						<key>AngularVelocity</key>
+						<real>0.0</real>
+						<key>CanSleep</key>
+						<true/>
+						<key>FixedRot</key>
+						<false/>
+						<key>GravityScale</key>
+						<real>1</real>
+						<key>HandledBySH</key>
+						<true/>
+						<key>IsBullet</key>
+						<false/>
+						<key>LinearDamping</key>
+						<real>0.0</real>
+						<key>LinearVelocity</key>
+						<string>{0, 0}</string>
+						<key>SH_ComplexShapes</key>
+						<array/>
+						<key>Type</key>
+						<integer>3</integer>
+					</dict>
+					<key>SHSheetName</key>
+					<string>Mario</string>
+					<key>SHSpriteName</key>
+					<string>Mario_Idle_1</string>
+					<key>SheetImage</key>
+					<string>Mario_Mario.png</string>
+					<key>SheetImage-HD</key>
+					<string>Mario_Mario-ipadhd.png</string>
+					<key>TextureProperties</key>
+					<dict>
+						<key>Angle</key>
+						<integer>0</integer>
+						<key>Border</key>
+						<integer>0</integer>
+						<key>CanBeTrimmed</key>
+						<true/>
+						<key>Color</key>
+						<string>{{1, 1}, {1, 1}}</string>
+						<key>ConvertedFromOldFormat</key>
+						<false/>
+						<key>CustomClassName</key>
+						<string></string>
+						<key>FlipX</key>
+						<false/>
+						<key>FlipY</key>
+						<false/>
+						<key>Frame</key>
+						<string>{{2, 57}, {14.75, 25.5}}</string>
+						<key>Frame-HD</key>
+						<string>{{8, 228}, {57, 102}}</string>
+						<key>Image</key>
+						<string>Mario_Mario.png</string>
+						<key>Image-HD</key>
+						<string>Mario_Mario-ipadhd.png</string>
+						<key>IsCropped</key>
+						<false/>
+						<key>IsDrawable</key>
+						<true/>
+						<key>IsRotated</key>
+						<true/>
+						<key>IsTrimmed</key>
+						<true/>
+						<key>Name</key>
+						<string>Mario_Idle_1</string>
+						<key>Opacity</key>
+						<real>1</real>
+						<key>OriginalImage</key>
+						<string>/Users/joshuascorca/Desktop/Mario/Idle/Mario_Idle_1.png</string>
+						<key>OriginalImage_RelativePath</key>
+						<string>../../../../../../../Desktop/Mario/Idle/Mario_Idle_1.png/</string>
+						<key>OriginalRect</key>
+						<string>{{0, 0}, {57, 102}}</string>
+						<key>OriginalSize</key>
+						<string>{57, 102}</string>
+						<key>Position</key>
+						<string>{8, 228}</string>
+						<key>Scale</key>
+						<string>{1, 1}</string>
+						<key>SpriteSize</key>
+						<string>{14.25, 25.5}</string>
+						<key>SpriteWasBreaked</key>
+						<false/>
+						<key>Tag</key>
+						<integer>0</integer>
+						<key>TextureOffset</key>
+						<string>{0.25, -0}</string>
+						<key>UsesBatchRendering</key>
+						<true/>
+						<key>ZOrder</key>
+						<integer>0</integer>
+					</dict>
+				</dict>
+				<key>Mario_Idle_2</key>
+				<dict>
+					<key>DocumentSecurityImageBookmark</key>
+					<data>
+					Ym9vawwEAAAAAAQQMAAAAAAAAAAAAAAAAAAA
+					AAAAAAAAAAAAAAAAAAAAAAAAAAAA5AIAAAUA
+					AAABAQAAVXNlcnMAAAAMAAAAAQEAAGpvc2h1
+					YXNjb3JjYQcAAAABAQAARGVza3RvcAAFAAAA
+					AQEAAE1hcmlvAAAABAAAAAEBAABJZGxlEAAA
+					AAEBAABNYXJpb19JZGxlXzIucG5nGAAAAAEG
+					AAAEAAAAFAAAACgAAAA4AAAASAAAAFQAAAAI
+					AAAABAMAACnAAAAAAAAACAAAAAQDAAD49QUA
+					AAAAAAgAAAAEAwAAxfYFAAAAAAAIAAAABAMA
+					AMk3KQEAAAAACAAAAAQDAABPkikBAAAAAAgA
+					AAAEAwAAV5IpAQAAAAAYAAAAAQYAAIwAAACc
+					AAAArAAAALwAAADMAAAA3AAAAAgAAAAABAAA
+					QbhMfKgAAAAYAAAAAQIAAAEAAAAAAAAADwAA
+					AAAAAAAAAAAAAAAAAAAAAAABBQAABAAAAAMD
+					AAAIAAAABAAAAAMDAAAEAAAACAAAAAQDAAAE
+					AAAAAAAAAAQAAAADAwAA9QEAAA0AAAABAQAA
+					TWFjaW50b3NoIFNTRAAAAAgAAAAEAwAAAHCi
+					R3QAAAAIAAAAAAQAAEG1bDDgAAAAJAAAAAEB
+					AAAxMEYxRTZBOC1BQThCLTMwREQtQTUyNy1E
+					NThFODI2NTkyMDMYAAAAAQIAAIEAAAABAAgA
+					7xcAAAEACAAAAAAAAAAAAAEAAAABAQAALwAA
+					AAQAAAADAwAAAAEAAMgAAAABAgAAZjhhNzJm
+					NWU0YzhkZjkwOTZmM2RkYTM1MzM0OTk1OTI1
+					NGNkMjE0YTswMDAwMDAwMDswMDAwMDAwMDsw
+					MDAwMDAwMDAwMDAwMDIwO2NvbS5hcHBsZS5h
+					cHAtc2FuZGJveC5yZWFkLXdyaXRlOzAwMDAw
+					MDAxOzAxMDAwMDAyOzAwMDAwMDAwMDEyOTky
+					NTc7L3VzZXJzL2pvc2h1YXNjb3JjYS9kZXNr
+					dG9wL21hcmlvL2lkbGUvbWFyaW9faWRsZV8y
+					LnBuZwDwAAAA/v///wEAAAAAAAAAEwAAAAQQ
+					AABsAAAAAAAAAAUQAADsAAAAAAAAABAQAAAc
+					AQAAAAAAAEAQAAAMAQAAAAAAAFQQAABEAQAA
+					AAAAAFUQAABQAQAAAAAAAFYQAAA8AQAAAAAA
+					AAIgAAD8AQAAAAAAABAgAAB4AQAAAAAAABEg
+					AACwAQAAAAAAABIgAACQAQAAAAAAABMgAACg
+					AQAAAAAAACAgAADcAQAAAAAAADAgAAA8AQAA
+					AAAAAAHAAABcAQAAAAAAABHAAAAUAAAAAAAA
+					ABLAAABsAQAAAAAAABDQAAAIAgAAAAAAAIDw
+					AAAUAgAAAAAAAA==
+					</data>
+					<key>IsSHSprite</key>
+					<true/>
+					<key>PhysicProperties</key>
+					<dict>
+						<key>AngularDamping</key>
+						<real>0.0</real>
+						<key>AngularVelocity</key>
+						<real>0.0</real>
+						<key>CanSleep</key>
+						<true/>
+						<key>FixedRot</key>
+						<false/>
+						<key>GravityScale</key>
+						<real>1</real>
+						<key>HandledBySH</key>
+						<true/>
+						<key>IsBullet</key>
+						<false/>
+						<key>LinearDamping</key>
+						<real>0.0</real>
+						<key>LinearVelocity</key>
+						<string>{0, 0}</string>
+						<key>SH_ComplexShapes</key>
+						<array/>
+						<key>Type</key>
+						<integer>3</integer>
+					</dict>
+					<key>SHSheetName</key>
+					<string>Mario</string>
+					<key>SHSpriteName</key>
+					<string>Mario_Idle_2</string>
+					<key>SheetImage</key>
+					<string>Mario_Mario.png</string>
+					<key>SheetImage-HD</key>
+					<string>Mario_Mario-ipadhd.png</string>
+					<key>TextureProperties</key>
+					<dict>
+						<key>Angle</key>
+						<integer>0</integer>
+						<key>Border</key>
+						<integer>0</integer>
+						<key>CanBeTrimmed</key>
+						<true/>
+						<key>Color</key>
+						<string>{{1, 1}, {1, 1}}</string>
+						<key>ConvertedFromOldFormat</key>
+						<false/>
+						<key>CustomClassName</key>
+						<string></string>
+						<key>FlipX</key>
+						<false/>
+						<key>FlipY</key>
+						<false/>
+						<key>Frame</key>
+						<string>{{2, 73}, {14.75, 25.5}}</string>
+						<key>Frame-HD</key>
+						<string>{{8, 292}, {57, 102}}</string>
+						<key>Image</key>
+						<string>Mario_Mario.png</string>
+						<key>Image-HD</key>
+						<string>Mario_Mario-ipadhd.png</string>
+						<key>IsCropped</key>
+						<false/>
+						<key>IsDrawable</key>
+						<true/>
+						<key>IsRotated</key>
+						<true/>
+						<key>IsTrimmed</key>
+						<true/>
+						<key>Name</key>
+						<string>Mario_Idle_2</string>
+						<key>Opacity</key>
+						<real>1</real>
+						<key>OriginalImage</key>
+						<string>/Users/joshuascorca/Desktop/Mario/Idle/Mario_Idle_2.png</string>
+						<key>OriginalImage_RelativePath</key>
+						<string>../../../../../../../Desktop/Mario/Idle/Mario_Idle_2.png/</string>
+						<key>OriginalRect</key>
+						<string>{{0, 0}, {57, 102}}</string>
+						<key>OriginalSize</key>
+						<string>{57, 102}</string>
+						<key>Position</key>
+						<string>{8, 292}</string>
+						<key>Scale</key>
+						<string>{1, 1}</string>
+						<key>SpriteSize</key>
+						<string>{14.25, 25.5}</string>
+						<key>SpriteWasBreaked</key>
+						<false/>
+						<key>Tag</key>
+						<integer>0</integer>
+						<key>TextureOffset</key>
+						<string>{0.25, -0}</string>
+						<key>UsesBatchRendering</key>
+						<true/>
+						<key>ZOrder</key>
+						<integer>0</integer>
+					</dict>
+				</dict>
+				<key>Mario_Idle_3</key>
+				<dict>
+					<key>DocumentSecurityImageBookmark</key>
+					<data>
+					Ym9vawwEAAAAAAQQMAAAAAAAAAAAAAAAAAAA
+					AAAAAAAAAAAAAAAAAAAAAAAAAAAA5AIAAAUA
+					AAABAQAAVXNlcnMAAAAMAAAAAQEAAGpvc2h1
+					YXNjb3JjYQcAAAABAQAARGVza3RvcAAFAAAA
+					AQEAAE1hcmlvAAAABAAAAAEBAABJZGxlEAAA
+					AAEBAABNYXJpb19JZGxlXzMucG5nGAAAAAEG
+					AAAEAAAAFAAAACgAAAA4AAAASAAAAFQAAAAI
+					AAAABAMAACnAAAAAAAAACAAAAAQDAAD49QUA
+					AAAAAAgAAAAEAwAAxfYFAAAAAAAIAAAABAMA
+					AMk3KQEAAAAACAAAAAQDAABPkikBAAAAAAgA
+					AAAEAwAAWZIpAQAAAAAYAAAAAQYAAIwAAACc
+					AAAArAAAALwAAADMAAAA3AAAAAgAAAAABAAA
+					QbhMfLgAAAAYAAAAAQIAAAEAAAAAAAAADwAA
+					AAAAAAAAAAAAAAAAAAAAAAABBQAABAAAAAMD
+					AAAIAAAABAAAAAMDAAAEAAAACAAAAAQDAAAE
+					AAAAAAAAAAQAAAADAwAA9QEAAA0AAAABAQAA
+					TWFjaW50b3NoIFNTRAAAAAgAAAAEAwAAAHCi
+					R3QAAAAIAAAAAAQAAEG1bDDgAAAAJAAAAAEB
+					AAAxMEYxRTZBOC1BQThCLTMwREQtQTUyNy1E
+					NThFODI2NTkyMDMYAAAAAQIAAIEAAAABAAgA
+					7xcAAAEACAAAAAAAAAAAAAEAAAABAQAALwAA
+					AAQAAAADAwAAAAEAAMgAAAABAgAAYjc3NjVj
+					ODFiOTE5NWM0MmI3Y2RmNzNjNDYwMTg1MGI3
+					M2Q2MjkwYzswMDAwMDAwMDswMDAwMDAwMDsw
+					MDAwMDAwMDAwMDAwMDIwO2NvbS5hcHBsZS5h
+					cHAtc2FuZGJveC5yZWFkLXdyaXRlOzAwMDAw
+					MDAxOzAxMDAwMDAyOzAwMDAwMDAwMDEyOTky
+					NTk7L3VzZXJzL2pvc2h1YXNjb3JjYS9kZXNr
+					dG9wL21hcmlvL2lkbGUvbWFyaW9faWRsZV8z
+					LnBuZwDwAAAA/v///wEAAAAAAAAAEwAAAAQQ
+					AABsAAAAAAAAAAUQAADsAAAAAAAAABAQAAAc
+					AQAAAAAAAEAQAAAMAQAAAAAAAFQQAABEAQAA
+					AAAAAFUQAABQAQAAAAAAAFYQAAA8AQAAAAAA
+					AAIgAAD8AQAAAAAAABAgAAB4AQAAAAAAABEg
+					AACwAQAAAAAAABIgAACQAQAAAAAAABMgAACg
+					AQAAAAAAACAgAADcAQAAAAAAADAgAAA8AQAA
+					AAAAAAHAAABcAQAAAAAAABHAAAAUAAAAAAAA
+					ABLAAABsAQAAAAAAABDQAAAIAgAAAAAAAIDw
+					AAAUAgAAAAAAAA==
+					</data>
+					<key>IsSHSprite</key>
+					<true/>
+					<key>PhysicProperties</key>
+					<dict>
+						<key>AngularDamping</key>
+						<real>0.0</real>
+						<key>AngularVelocity</key>
+						<real>0.0</real>
+						<key>CanSleep</key>
+						<true/>
+						<key>FixedRot</key>
+						<false/>
+						<key>GravityScale</key>
+						<real>1</real>
+						<key>HandledBySH</key>
+						<true/>
+						<key>IsBullet</key>
+						<false/>
+						<key>LinearDamping</key>
+						<real>0.0</real>
+						<key>LinearVelocity</key>
+						<string>{0, 0}</string>
+						<key>SH_ComplexShapes</key>
+						<array/>
+						<key>Type</key>
+						<integer>3</integer>
+					</dict>
+					<key>SHSheetName</key>
+					<string>Mario</string>
+					<key>SHSpriteName</key>
+					<string>Mario_Idle_3</string>
+					<key>SheetImage</key>
+					<string>Mario_Mario.png</string>
+					<key>SheetImage-HD</key>
+					<string>Mario_Mario-ipadhd.png</string>
+					<key>TextureProperties</key>
+					<dict>
+						<key>Angle</key>
+						<integer>0</integer>
+						<key>Border</key>
+						<integer>0</integer>
+						<key>CanBeTrimmed</key>
+						<true/>
+						<key>Color</key>
+						<string>{{1, 1}, {1, 1}}</string>
+						<key>ConvertedFromOldFormat</key>
+						<false/>
+						<key>CustomClassName</key>
+						<string></string>
+						<key>FlipX</key>
+						<false/>
+						<key>FlipY</key>
+						<false/>
+						<key>Frame</key>
+						<string>{{2, 90}, {14.75, 25.5}}</string>
+						<key>Frame-HD</key>
+						<string>{{8, 360}, {57, 102}}</string>
+						<key>Image</key>
+						<string>Mario_Mario.png</string>
+						<key>Image-HD</key>
+						<string>Mario_Mario-ipadhd.png</string>
+						<key>IsCropped</key>
+						<false/>
+						<key>IsDrawable</key>
+						<true/>
+						<key>IsRotated</key>
+						<true/>
+						<key>IsTrimmed</key>
+						<true/>
+						<key>Name</key>
+						<string>Mario_Idle_3</string>
+						<key>Opacity</key>
+						<real>1</real>
+						<key>OriginalImage</key>
+						<string>/Users/joshuascorca/Desktop/Mario/Idle/Mario_Idle_3.png</string>
+						<key>OriginalImage_RelativePath</key>
+						<string>../../../../../../../Desktop/Mario/Idle/Mario_Idle_3.png/</string>
+						<key>OriginalRect</key>
+						<string>{{0, 0}, {57, 102}}</string>
+						<key>OriginalSize</key>
+						<string>{57, 102}</string>
+						<key>Position</key>
+						<string>{8, 360}</string>
+						<key>Scale</key>
+						<string>{1, 1}</string>
+						<key>SpriteSize</key>
+						<string>{14.25, 25.5}</string>
+						<key>SpriteWasBreaked</key>
+						<false/>
+						<key>Tag</key>
+						<integer>0</integer>
+						<key>TextureOffset</key>
+						<string>{0.25, -0}</string>
+						<key>UsesBatchRendering</key>
+						<true/>
+						<key>ZOrder</key>
+						<integer>0</integer>
+					</dict>
+				</dict>
+				<key>Mario_Idle_4</key>
+				<dict>
+					<key>DocumentSecurityImageBookmark</key>
+					<data>
+					Ym9vawwEAAAAAAQQMAAAAAAAAAAAAAAAAAAA
+					AAAAAAAAAAAAAAAAAAAAAAAAAAAA5AIAAAUA
+					AAABAQAAVXNlcnMAAAAMAAAAAQEAAGpvc2h1
+					YXNjb3JjYQcAAAABAQAARGVza3RvcAAFAAAA
+					AQEAAE1hcmlvAAAABAAAAAEBAABJZGxlEAAA
+					AAEBAABNYXJpb19JZGxlXzQucG5nGAAAAAEG
+					AAAEAAAAFAAAACgAAAA4AAAASAAAAFQAAAAI
+					AAAABAMAACnAAAAAAAAACAAAAAQDAAD49QUA
+					AAAAAAgAAAAEAwAAxfYFAAAAAAAIAAAABAMA
+					AMk3KQEAAAAACAAAAAQDAABPkikBAAAAAAgA
+					AAAEAwAAWpIpAQAAAAAYAAAAAQYAAIwAAACc
+					AAAArAAAALwAAADMAAAA3AAAAAgAAAAABAAA
+					QbhMfMoAAAAYAAAAAQIAAAEAAAAAAAAADwAA
+					AAAAAAAAAAAAAAAAAAAAAAABBQAABAAAAAMD
+					AAAIAAAABAAAAAMDAAAEAAAACAAAAAQDAAAE
+					AAAAAAAAAAQAAAADAwAA9QEAAA0AAAABAQAA
+					TWFjaW50b3NoIFNTRAAAAAgAAAAEAwAAAHCi
+					R3QAAAAIAAAAAAQAAEG1bDDgAAAAJAAAAAEB
+					AAAxMEYxRTZBOC1BQThCLTMwREQtQTUyNy1E
+					NThFODI2NTkyMDMYAAAAAQIAAIEAAAABAAgA
+					7xcAAAEACAAAAAAAAAAAAAEAAAABAQAALwAA
+					AAQAAAADAwAAAAEAAMgAAAABAgAAZDgzNDRj
+					OGE3YTM3Y2U3MWUwOTNjYmRlN2E5ZDU0MDNl
+					ZWY5NDE1NDswMDAwMDAwMDswMDAwMDAwMDsw
+					MDAwMDAwMDAwMDAwMDIwO2NvbS5hcHBsZS5h
+					cHAtc2FuZGJveC5yZWFkLXdyaXRlOzAwMDAw
+					MDAxOzAxMDAwMDAyOzAwMDAwMDAwMDEyOTky
+					NWE7L3VzZXJzL2pvc2h1YXNjb3JjYS9kZXNr
+					dG9wL21hcmlvL2lkbGUvbWFyaW9faWRsZV80
+					LnBuZwDwAAAA/v///wEAAAAAAAAAEwAAAAQQ
+					AABsAAAAAAAAAAUQAADsAAAAAAAAABAQAAAc
+					AQAAAAAAAEAQAAAMAQAAAAAAAFQQAABEAQAA
+					AAAAAFUQAABQAQAAAAAAAFYQAAA8AQAAAAAA
+					AAIgAAD8AQAAAAAAABAgAAB4AQAAAAAAABEg
+					AACwAQAAAAAAABIgAACQAQAAAAAAABMgAACg
+					AQAAAAAAACAgAADcAQAAAAAAADAgAAA8AQAA
+					AAAAAAHAAABcAQAAAAAAABHAAAAUAAAAAAAA
+					ABLAAABsAQAAAAAAABDQAAAIAgAAAAAAAIDw
+					AAAUAgAAAAAAAA==
+					</data>
+					<key>IsSHSprite</key>
+					<true/>
+					<key>PhysicProperties</key>
+					<dict>
+						<key>AngularDamping</key>
+						<real>0.0</real>
+						<key>AngularVelocity</key>
+						<real>0.0</real>
+						<key>CanSleep</key>
+						<true/>
+						<key>FixedRot</key>
+						<false/>
+						<key>GravityScale</key>
+						<real>1</real>
+						<key>HandledBySH</key>
+						<true/>
+						<key>IsBullet</key>
+						<false/>
+						<key>LinearDamping</key>
+						<real>0.0</real>
+						<key>LinearVelocity</key>
+						<string>{0, 0}</string>
+						<key>SH_ComplexShapes</key>
+						<array/>
+						<key>Type</key>
+						<integer>3</integer>
+					</dict>
+					<key>SHSheetName</key>
+					<string>Mario</string>
+					<key>SHSpriteName</key>
+					<string>Mario_Idle_4</string>
+					<key>SheetImage</key>
+					<string>Mario_Mario.png</string>
+					<key>SheetImage-HD</key>
+					<string>Mario_Mario-ipadhd.png</string>
+					<key>TextureProperties</key>
+					<dict>
+						<key>Angle</key>
+						<integer>0</integer>
+						<key>Border</key>
+						<integer>0</integer>
+						<key>CanBeTrimmed</key>
+						<true/>
+						<key>Color</key>
+						<string>{{1, 1}, {1, 1}}</string>
+						<key>ConvertedFromOldFormat</key>
+						<false/>
+						<key>CustomClassName</key>
+						<string></string>
+						<key>FlipX</key>
+						<false/>
+						<key>FlipY</key>
+						<false/>
+						<key>Frame</key>
+						<string>{{2, 106}, {14.75, 25.5}}</string>
+						<key>Frame-HD</key>
+						<string>{{8, 424}, {57, 102}}</string>
+						<key>Image</key>
+						<string>Mario_Mario.png</string>
+						<key>Image-HD</key>
+						<string>Mario_Mario-ipadhd.png</string>
+						<key>IsCropped</key>
+						<false/>
+						<key>IsDrawable</key>
+						<true/>
+						<key>IsRotated</key>
+						<true/>
+						<key>IsTrimmed</key>
+						<true/>
+						<key>Name</key>
+						<string>Mario_Idle_4</string>
+						<key>Opacity</key>
+						<real>1</real>
+						<key>OriginalImage</key>
+						<string>/Users/joshuascorca/Desktop/Mario/Idle/Mario_Idle_4.png</string>
+						<key>OriginalImage_RelativePath</key>
+						<string>../../../../../../../Desktop/Mario/Idle/Mario_Idle_4.png/</string>
+						<key>OriginalRect</key>
+						<string>{{0, 0}, {57, 102}}</string>
+						<key>OriginalSize</key>
+						<string>{57, 102}</string>
+						<key>Position</key>
+						<string>{8, 424}</string>
+						<key>Scale</key>
+						<string>{1, 1}</string>
+						<key>SpriteSize</key>
+						<string>{14.25, 25.5}</string>
+						<key>SpriteWasBreaked</key>
+						<false/>
+						<key>Tag</key>
+						<integer>0</integer>
+						<key>TextureOffset</key>
+						<string>{0.25, -0}</string>
+						<key>UsesBatchRendering</key>
+						<true/>
+						<key>ZOrder</key>
+						<integer>0</integer>
+					</dict>
+				</dict>
 				<key>Mario_Run_1</key>
 				<dict>
 					<key>DocumentSecurityImageBookmark</key>
@@ -137,9 +709,9 @@
 						<key>FlipY</key>
 						<false/>
 						<key>Frame</key>
-						<string>{{2, 57}, {15, 24}}</string>
+						<string>{{2, 122}, {15, 24}}</string>
 						<key>Frame-HD</key>
-						<string>{{8, 228}, {60, 96}}</string>
+						<string>{{8, 488}, {60, 96}}</string>
 						<key>Image</key>
 						<string>Mario_Mario.png</string>
 						<key>Image-HD</key>
@@ -165,7 +737,7 @@
 						<key>OriginalSize</key>
 						<string>{66, 96}</string>
 						<key>Position</key>
-						<string>{8, 228}</string>
+						<string>{8, 488}</string>
 						<key>Scale</key>
 						<string>{1, 1}</string>
 						<key>SpriteSize</key>
@@ -423,9 +995,9 @@
 						<key>FlipY</key>
 						<false/>
 						<key>Frame</key>
-						<string>{{2, 74}, {15, 24}}</string>
+						<string>{{2, 139}, {15, 24}}</string>
 						<key>Frame-HD</key>
-						<string>{{8, 296}, {60, 96}}</string>
+						<string>{{8, 556}, {60, 96}}</string>
 						<key>Image</key>
 						<string>Mario_Mario.png</string>
 						<key>Image-HD</key>
@@ -451,7 +1023,7 @@
 						<key>OriginalSize</key>
 						<string>{66, 96}</string>
 						<key>Position</key>
-						<string>{8, 296}</string>
+						<string>{8, 556}</string>
 						<key>Scale</key>
 						<string>{1, 1}</string>
 						<key>SpriteSize</key>
@@ -566,9 +1138,9 @@
 						<key>FlipY</key>
 						<false/>
 						<key>Frame</key>
-						<string>{{2, 91}, {12.75, 24}}</string>
+						<string>{{2, 156}, {12.75, 24}}</string>
 						<key>Frame-HD</key>
-						<string>{{8, 364}, {51, 96}}</string>
+						<string>{{8, 624}, {51, 96}}</string>
 						<key>Image</key>
 						<string>Mario_Mario.png</string>
 						<key>Image-HD</key>
@@ -594,7 +1166,7 @@
 						<key>OriginalSize</key>
 						<string>{66, 96}</string>
 						<key>Position</key>
-						<string>{8, 364}</string>
+						<string>{8, 624}</string>
 						<key>Scale</key>
 						<string>{1, 1}</string>
 						<key>SpriteSize</key>
@@ -899,7 +1471,7 @@
 				</dict>
 			</dict>
 			<key>Size</key>
-			<string>{128, 512}</string>
+			<string>{128, 1024}</string>
 			<key>Trim</key>
 			<true/>
 			<key>ZOrder</key>

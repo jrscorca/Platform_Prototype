@@ -8,23 +8,9 @@
 
 #import "InputComponent.h"
 #import "Character.h"
+#import "AnimationComponent.h"
 
 @implementation InputComponent
-
--(id)init{
-    if(self = [super init]){
-        NSAssert( _parent != nil, @"parent must be non-nil");
-    }
-    return self;
-}
-
--(id)initWithParent:(id)parent{
-    if(self = [super init]){
-        _parent = parent;
-         NSAssert( _parent != nil, @"parent must be non-nil");
-    }
-    return self;
-}
 
 -(void)update{
     if([_parent isKindOfClass:[Character class]]){
@@ -58,6 +44,8 @@
 
 -(void)characterUp{
     Character *character = ((Character*)_parent);
+    
+    
     if (character.sprite.physicsBody.velocity.y <= 100){
         [character.sprite.physicsBody applyForce:ccp(0, 5000)];
     }
@@ -69,6 +57,7 @@
 
 -(void)characterRight{
     Character *character = ((Character*)_parent);
+    [character.animation runRunAction];
     character.sprite.flipX = NO;
     [character.sprite.physicsBody applyForce:ccp(1000, 0)];
     NSLog(@"%f",character.sprite.physicsBody.velocity.x);
@@ -83,6 +72,7 @@
 
 -(void)characterLeft{
     Character *character = ((Character*)_parent);
+    [character.animation runRunAction];
     character.sprite.flipX = YES;
     [character.sprite.physicsBody applyForce:ccp(-1000, 0)];
     NSLog(@"%f",character.sprite.physicsBody.velocity.x);
@@ -102,6 +92,8 @@
 
 -(void)noInput{
     Character *character = ((Character*)_parent);
+   [character.sprite stopAction:[character.sprite getActionByTag:1]];
+    [character.animation runIdleAction];
 }
 
 

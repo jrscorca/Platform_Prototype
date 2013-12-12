@@ -12,6 +12,8 @@
 #import "Character.h"
 #import "InputComponent.h"
 #import "Platform.h"
+#import "PhysicsComponent.h"
+#import "Constants.h"
 
 // -----------------------------------------------------------------------
 #pragma mark - HelloWorldScene
@@ -104,7 +106,7 @@
     CGSize size = groundSprite.contentSize;
     groundSprite.physicsBody = [CCPhysicsBody bodyWithRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:0];
     groundSprite.physicsBody.type = CCPhysicsBodyTypeStatic;
-    groundSprite.physicsBody.friction = 1.2;
+    groundSprite.physicsBody.friction = kPlatformFriction;
     [physicsNode addChild:groundSprite];
 }
 
@@ -154,17 +156,18 @@
 }
 
 -(void)updatePositionCheck:(CCTime)dt{
+    character1.sprite.positionType = CCPositionTypeNormalized;
     if (character1.sprite.position.y < -100) {
-        character1.sprite.position = ccp(200, 200);
+        character1.sprite.position = ccp(.5, .75);
     }
     if (character1.sprite.position.y > [[CCDirector sharedDirector] viewSize].height+100) {
-        character1.sprite.position = ccp(200, 200);
+        character1.sprite.position = ccp(.5, .75);
     }
     if (character1.sprite.position.x < -100) {
-        character1.sprite.position = ccp(200, 200);
+        character1.sprite.position = ccp(.5, .75);
     }
     if (character1.sprite.position.x > [[CCDirector sharedDirector] viewSize].width+100) {
-        character1.sprite.position = ccp(200, 200);
+        character1.sprite.position = ccp(.5, .75);
     }
 }
 
@@ -241,17 +244,9 @@
     NSLog(@"right");
 }
 
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
-    int offset = 0;
-    if(character1.sprite.physicsBody.velocity.y<0){
-        offset =(character1.sprite.contentSize.height*character1.sprite.scaleY)/4;
-    }
-    int a = character1.sprite.position.y-((character1.sprite.contentSize.height*character1.sprite.scaleY)/2)+offset;
-    int b =platform.sprite.position.y+((platform.sprite.contentSize.height*platform.sprite.scaleY)/2);
-    if(a >= b){
-        return YES;
-    }
-    return NO;
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
+
+    return [character1.physics collisionBegin:pair character:character1 platform:platform];
 }
 
 -(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{

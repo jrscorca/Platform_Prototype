@@ -7,10 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Component.h"
 @class Character;
-@interface InputComponent : NSObject
-
-@property(nonatomic, weak) id parent;
+@interface InputComponent : Component
 
 -(void)update;
 -(void)up;
@@ -18,6 +17,5 @@
 -(void)left;
 -(void)down;
 -(void)noInput;
--(id)initWithParent:(id)parent;
 
 @end

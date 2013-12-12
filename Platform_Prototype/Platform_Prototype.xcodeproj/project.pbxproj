@@ -14,6 +14,9 @@
 		F22CD067184B3CCB00B99A37 /* Mario_Mario.plist in Resources */ = {isa = PBXBuildFile; fileRef = F22CD061184B3CCB00B99A37 /* Mario_Mario.plist */; };
 		F22CD068184B3CCB00B99A37 /* Mario_Mario.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD062184B3CCB00B99A37 /* Mario_Mario.png */; };
 		F22CD06A184B3D5B00B99A37 /* Mario_Run_1.png in Resources */ = {isa = PBXBuildFile; fileRef = F22CD069184B3D5B00B99A37 /* Mario_Run_1.png */; };
+		F22CD06F184C130600B99A37 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = F22CD06E184C130600B99A37 /* Constants.m */; };
+		F22CD072184C21F700B99A37 /* AnimationComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = F22CD071184C21F700B99A37 /* AnimationComponent.m */; };
+		F22CD075184C26A200B99A37 /* Component.m in Sources */ = {isa = PBXBuildFile; fileRef = F22CD074184C26A200B99A37 /* Component.m */; };
 		F2AE6C581846ECC2000153E1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C571846ECC2000153E1 /* QuartzCore.framework */; };
 		F2AE6C5A1846ECC2000153E1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C591846ECC2000153E1 /* OpenGLES.framework */; };
 		F2AE6C5C1846ECC2000153E1 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2AE6C5B1846ECC2000153E1 /* OpenAL.framework */; };
@@ -225,6 +228,12 @@
 		F22CD061184B3CCB00B99A37 /* Mario_Mario.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Mario_Mario.plist; path = Resources/Mario_Mario.plist; sourceTree = "<group>"; };
 		F22CD062184B3CCB00B99A37 /* Mario_Mario.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Mario_Mario.png; path = Resources/Mario_Mario.png; sourceTree = "<group>"; };
 		F22CD069184B3D5B00B99A37 /* Mario_Run_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Mario_Run_1.png; sourceTree = "<group>"; };
+		F22CD06D184C130600B99A37 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		F22CD06E184C130600B99A37 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		F22CD070184C21F700B99A37 /* AnimationComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationComponent.h; sourceTree = "<group>"; };
+		F22CD071184C21F700B99A37 /* AnimationComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationComponent.m; sourceTree = "<group>"; };
+		F22CD073184C26A200B99A37 /* Component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Component.h; sourceTree = "<group>"; };
+		F22CD074184C26A200B99A37 /* Component.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Component.m; sourceTree = "<group>"; };
 		F2AE6C541846ECC2000153E1 /* Platform_Prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Platform_Prototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2AE6C571846ECC2000153E1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		F2AE6C591846ECC2000153E1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -686,6 +695,43 @@
 				F22CD062184B3CCB00B99A37 /* Mario_Mario.png */,
 			);
 			name = Mario;
+			sourceTree = "<group>";
+		};
+		F22CD076184C7E4500B99A37 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F22CD070184C21F700B99A37 /* AnimationComponent.h */,
+				F22CD071184C21F700B99A37 /* AnimationComponent.m */,
+				F22CD073184C26A200B99A37 /* Component.h */,
+				F22CD074184C26A200B99A37 /* Component.m */,
+				F2AE6EFD1846ECD5000153E1 /* InputComponent.h */,
+				F2AE6EFE1846ECD5000153E1 /* InputComponent.m */,
+				F2AE6F011846ECD5000153E1 /* PhysicsComponent.h */,
+				F2AE6F021846ECD5000153E1 /* PhysicsComponent.m */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		F22CD077184C7E5400B99A37 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				F2AE6EFB1846ECD5000153E1 /* IntroScene.h */,
+				F2AE6EFC1846ECD5000153E1 /* IntroScene.m */,
+				F2AE6EF91846ECD5000153E1 /* HelloWorldScene.h */,
+				F2AE6EFA1846ECD5000153E1 /* HelloWorldScene.m */,
+			);
+			name = Scenes;
+			sourceTree = "<group>";
+		};
+		F22CD078184C7E5B00B99A37 /* Game Objects */ = {
+			isa = PBXGroup;
+			children = (
+				F2AE6EFF1846ECD5000153E1 /* Character.h */,
+				F2AE6F001846ECD5000153E1 /* Character.m */,
+				F2AE6F031846ECD5000153E1 /* Platform.h */,
+				F2AE6F041846ECD5000153E1 /* Platform.m */,
+			);
+			name = "Game Objects";
 			sourceTree = "<group>";
 		};
 		F2AE6C4B1846ECC2000153E1 = {
@@ -1527,6 +1573,8 @@
 		F2AE6EE41846ECC4000153E1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F22CD06D184C130600B99A37 /* Constants.h */,
+				F22CD06E184C130600B99A37 /* Constants.m */,
 				F2AE6EE51846ECC4000153E1 /* Prefix.pch */,
 				F2AE6EE61846ECC4000153E1 /* main.m */,
 			);
@@ -1536,20 +1584,11 @@
 		F2AE6EE81846ECC4000153E1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F22CD078184C7E5B00B99A37 /* Game Objects */,
+				F22CD077184C7E5400B99A37 /* Scenes */,
+				F22CD076184C7E4500B99A37 /* Components */,
 				F2AE6EF71846ECD5000153E1 /* AppDelegate.h */,
 				F2AE6EF81846ECD5000153E1 /* AppDelegate.m */,
-				F2AE6EF91846ECD5000153E1 /* HelloWorldScene.h */,
-				F2AE6EFA1846ECD5000153E1 /* HelloWorldScene.m */,
-				F2AE6EFB1846ECD5000153E1 /* IntroScene.h */,
-				F2AE6EFC1846ECD5000153E1 /* IntroScene.m */,
-				F2AE6EFD1846ECD5000153E1 /* InputComponent.h */,
-				F2AE6EFE1846ECD5000153E1 /* InputComponent.m */,
-				F2AE6EFF1846ECD5000153E1 /* Character.h */,
-				F2AE6F001846ECD5000153E1 /* Character.m */,
-				F2AE6F011846ECD5000153E1 /* PhysicsComponent.h */,
-				F2AE6F021846ECD5000153E1 /* PhysicsComponent.m */,
-				F2AE6F031846ECD5000153E1 /* Platform.h */,
-				F2AE6F041846ECD5000153E1 /* Platform.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1646,6 +1685,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F22CD075184C26A200B99A37 /* Component.m in Sources */,
 				F2AE6DA01846ECC3000153E1 /* CCProfiling.m in Sources */,
 				F2AE6D011846ECC2000153E1 /* CCParticleBatchNode.m in Sources */,
 				F2AE6F051846ECD5000153E1 /* AppDelegate.m in Sources */,
@@ -1770,11 +1810,13 @@
 				F2AE6E581846ECC3000153E1 /* neon_matrix_impl.c in Sources */,
 				F2AE6E521846ECC3000153E1 /* matrix.c in Sources */,
 				F2AE6EAB1846ECC4000153E1 /* cpConstraint.c in Sources */,
+				F22CD06F184C130600B99A37 /* Constants.m in Sources */,
 				F2AE6C981846ECC2000153E1 /* CCAction.m in Sources */,
 				F2AE6D171846ECC2000153E1 /* CCPhysicsNode.m in Sources */,
 				F2AE6DCA1846ECC3000153E1 /* OALActionManager.m in Sources */,
 				F2AE6DC71846ECC3000153E1 /* OALAction.m in Sources */,
 				F2AE6EAD1846ECC4000153E1 /* cpDampedRotarySpring.c in Sources */,
+				F22CD072184C21F700B99A37 /* AnimationComponent.m in Sources */,
 				F2AE6CFD1846ECC2000153E1 /* CCParallaxNode.m in Sources */,
 				F2AE6EC91846ECC4000153E1 /* cpSpaceComponent.c in Sources */,
 				F2AE6EA91846ECC4000153E1 /* cpCollision.c in Sources */,
@@ -1825,7 +1867,8 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Hunter Francis (4X375R9CAV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Hunter Francis (4X375R9CAV)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1837,6 +1880,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "112CEFA9-926A-44AC-A26C-357C0354160F";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1847,7 +1891,8 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Hunter Francis (4X375R9CAV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Hunter Francis (4X375R9CAV)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NDEBUG,
@@ -1857,6 +1902,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PROVISIONING_PROFILE = "112CEFA9-926A-44AC-A26C-357C0354160F";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1866,6 +1912,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Hunter Francis (4X375R9CAV)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1884,6 +1931,8 @@
 					$PROJECT_NAME/Libraries/Chipmunk/objectivec/libObjectiveChipmunk.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "112CEFA9-926A-44AC-A26C-357C0354160F";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1892,6 +1941,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Hunter Francis (4X375R9CAV)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Platform_Prototype/Supporting Files/Prefix.pch";
@@ -1909,6 +1959,8 @@
 					$PROJECT_NAME/Libraries/Chipmunk/objectivec/libObjectiveChipmunk.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "112CEFA9-926A-44AC-A26C-357C0354160F";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

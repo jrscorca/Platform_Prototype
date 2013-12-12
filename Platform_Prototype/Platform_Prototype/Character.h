@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
-@class InputComponent;
-@class PhysicsComponent;
+@class InputComponent, PhysicsComponent, AnimationComponent;
 @interface Character : NSObject
 
 @property(nonatomic, strong) CCSprite *sprite;
 @property(nonatomic, strong) InputComponent *input;
+@property(nonatomic, strong) PhysicsComponent *physics;
+@property(nonatomic, strong) AnimationComponent *animation;
 
 @end
