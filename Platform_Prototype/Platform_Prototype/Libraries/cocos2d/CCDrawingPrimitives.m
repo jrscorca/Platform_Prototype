@@ -4,6 +4,7 @@
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
  * Copyright (c) 2013 Nader Eloshaiker
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,6 @@
 #import <math.h>
 #import <stdlib.h>
 #import <string.h>
-
 #import "CCDrawingPrimitives.h"
 #import "ccMacros.h"
 #import "Platforms/CCGL.h"
@@ -167,7 +167,7 @@ void ccDrawRect( CGPoint origin, CGPoint destination )
 	ccDrawLine(CGPointMake(origin.x, destination.y), CGPointMake(origin.x, origin.y));
 }
 
-void ccDrawSolidRect( CGPoint origin, CGPoint destination, ccColor4F color )
+void ccDrawSolidRect( CGPoint origin, CGPoint destination, CCColor* color )
 {
 	CGPoint vertices[] = {
 		origin,
@@ -213,13 +213,15 @@ void ccDrawPoly( const CGPoint *poli, NSUInteger numberOfPoints, BOOL closePolyg
 	CC_INCREMENT_GL_DRAWS(1);
 }
 
-void ccDrawSolidPoly( const CGPoint *poli, NSUInteger numberOfPoints, ccColor4F color )
+void ccDrawSolidPoly( const CGPoint *poli, NSUInteger numberOfPoints, CCColor* color )
 {
+    ccColor4F color4 = color.ccColor4f;
+    
 	lazy_init();
     
 	[shader_ use];
 	[shader_ setUniformsForBuiltins];    
-	[shader_ setUniformLocation:colorLocation_ with4fv:(GLfloat*) &color.r count:1];
+	[shader_ setUniformLocation:colorLocation_ with4fv:(GLfloat*) &color4.r count:1];
 
 	ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
 
@@ -517,7 +519,7 @@ void ccDrawColor4F( GLfloat r, GLfloat g, GLfloat b, GLfloat a )
 
 void ccPointSize( GLfloat pointSize )
 {
-	pointSize_ = pointSize * CC_CONTENT_SCALE_FACTOR();
+	pointSize_ = pointSize * __ccContentScaleFactor;
 #ifdef __CC_PLATFORM_IOS
 #elif defined(__CC_PLATFORM_MAC)
 	glPointSize( pointSize );

@@ -22,10 +22,10 @@
 
 -(void)setup{
     CCSprite *sprite = [CCSprite spriteWithSpriteFrame:[CCSpriteFrame frameWithImageNamed:@"Mario_Run_1"]];
-    sprite.positionType = CCPositionTypeNormalized;
-    sprite.position = ccp(.5, .75);
+    //sprite.positionType = CCPositionTypeNormalized;
+    sprite.position = ccp(200, 60);
     self.sprite = sprite;
-    self.sprite.scale = 3.0f;
+    self.sprite.scale = 2.5f;
     
     //initialize components
     _input = [[InputComponent alloc] initWithParent:self];

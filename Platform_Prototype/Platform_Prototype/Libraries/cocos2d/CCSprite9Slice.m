@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- * Copyright (c) 2013 Lars Birkemose
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, CCSprite9SliceSizes)
 - (void)setTextureRect:(CGRect)rect rotated:(BOOL)rotated untrimmedSize:(CGSize)untrimmedSize
 {
     CGSize oldContentSize = self.contentSize;
-    CCContentSizeType oldContentSizeType = self.contentSizeType;
+    CCSizeType oldContentSizeType = self.contentSizeType;
     
     [super setTextureRect:rect rotated:rotated untrimmedSize:untrimmedSize];
     

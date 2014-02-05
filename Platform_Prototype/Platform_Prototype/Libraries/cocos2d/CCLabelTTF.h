@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,7 @@
  
  ### Resources
  
- - http://iosfonts.com/ (Safari for accurate font rendering.)
+ - http://iosfonts.com/ (Please use Safari for accurate font rendering)
  
  */
 
@@ -66,7 +67,7 @@
 @property (nonatomic,assign) float fontSize;
 
 /** The color of the text (If not using shadow or outline). */
-@property (nonatomic,assign) ccColor4B fontColor;
+@property (nonatomic,strong) CCColor* fontColor;
 
 /** The horizontal alignment technique of the text. */
 @property (nonatomic,assign) CCTextAlignment horizontalAlignment;
@@ -83,7 +84,7 @@
 @property (nonatomic,assign) CGSize dimensions;
 
 /** Dimension type of the label. */
-@property (nonatomic,assign) CCContentSizeType dimensionsType;
+@property (nonatomic,assign) CCSizeType dimensionsType;
 
 /** If true, the label will be scaled down to fit into the size provided by the dimensions property. Only has an effect if dimensions are set. */
 @property (nonatomic,assign) BOOL adjustsFontSizeToFit;
@@ -100,10 +101,13 @@
 /// -----------------------------------------------------------------------
 
 /** The color of the text shadow. If the color is transparent, no shadow will be used. */
-@property (nonatomic,assign) ccColor4B shadowColor;
+@property (nonatomic,strong) CCColor* shadowColor;
 
 /** The offset of the shadow. */
 @property (nonatomic,assign) CGPoint shadowOffset;
+
+/** The offset of the shadow in points */
+@property(nonatomic,readonly) CGPoint shadowOffsetInPoints;
 
 /** The position type to be used for the shadow offset. */
 @property (nonatomic,assign) CCPositionType shadowOffsetType;
@@ -117,7 +121,7 @@
 /// -----------------------------------------------------------------------
 
 /** The color of the text's outline. */
-@property (nonatomic,assign) ccColor4B outlineColor;
+@property (nonatomic,strong) CCColor* outlineColor;
 
 /** The width of the text's outline. */
 @property (nonatomic,assign) float outlineWidth;
@@ -230,7 +234,11 @@
 /// -----------------------------------------------------------------------
 
 #ifdef __CC_PLATFORM_MAC
-/** HTML text support. */
+/**
+ *  (OS X) HTML Label
+ *
+ *  @param html HTML Description.
+ */
 - (void) setHTML:(NSString*) html;
 #endif
 
@@ -239,7 +247,11 @@
 /// @name TTF Management
 /// -----------------------------------------------------------------------
 
-/** Register a TTF font resource. */
+/**
+ *  Register a TTF font resource.
+ *
+ *  @param fontFile Font file path.
+ */
 +(void) registerCustomTTF:(NSString*)fontFile;
 
 

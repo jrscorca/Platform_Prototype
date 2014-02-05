@@ -8,6 +8,7 @@
 
 #import "AnimationComponent.h"
 #import "Character.h"
+#import "CCAnimation.h"
 @implementation AnimationComponent
 
 
@@ -35,7 +36,7 @@
          [[CCAnimationFrame alloc] initWithSpriteFrame:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:[NSString stringWithFormat:@"Mario_Idle_%d",i]]  delayUnits:delayFrames userInfo:nil]];
     }
     CCAnimation *idleAnimation = [CCAnimation
-                                 animationWithAnimationFrames:idleFrames delayPerUnit:0.3f loops:-1];
+                                  animationWithAnimationFrames:idleFrames delayPerUnit:0.3f loops:-1];
     _idleAction = [CCActionAnimate actionWithAnimation:idleAnimation];
     _idleAction.tag = 2;
     [self runIdleAction];
@@ -51,6 +52,7 @@
 
 -(void)runRunAction{
     Character *character = _parent;
+    [character.sprite stopActionByTag:2];
     CCAction* action = [character.sprite getActionByTag:1];
     if (!action) {
         [character.sprite runAction:_runAction];

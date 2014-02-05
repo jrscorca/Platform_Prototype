@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,11 +60,6 @@
 #import "CCDirector_Private.h"
 
 #pragma mark -
-#pragma mark Director - global variables (optimization)
-
-CGFloat	__ccContentScaleFactor = 1;
-
-#pragma mark -
 #pragma mark Director
 
 @interface CCDirector ()
@@ -92,36 +88,16 @@ CGFloat	__ccContentScaleFactor = 1;
 #pragma mark -
 #pragma mark CCDirectorIOS
 
-@interface CCDirectorIOS ()
--(void) updateContentScaleFactor;
-@end
-
 @implementation CCDirectorIOS
 
 - (id) init
 {
 	if( (self=[super init]) ) {
-
-		__ccContentScaleFactor = 1;
-		_isContentScaleSupported = NO;
-
-        
-        
-
 		// running thread is main thread on iOS
 		_runningThread = [NSThread currentThread];
 		
 		// Apparently it comes with a default view, and we don't want it
 //		[self setView:nil];
-        
-        if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        {
-            self.positionScaleFactor = 2;
-        }
-        else
-        {
-            self.positionScaleFactor = 1;
-        }
 	}
 
 	return self;
@@ -179,7 +155,6 @@ CGFloat	__ccContentScaleFactor = 1;
 
 -(void) setProjection:(CCDirectorProjection)projection
 {
-	CGSize size = _winSizeInPixels;
 	CGSize sizePoint = _winSizeInPoints;
     
 	[self setViewport];
@@ -191,7 +166,7 @@ CGFloat	__ccContentScaleFactor = 1;
 			kmGLLoadIdentity();
 
 			kmMat4 orthoMatrix;
-			kmMat4OrthographicProjection(&orthoMatrix, 0, size.width / CC_CONTENT_SCALE_FACTOR(), 0, size.height / CC_CONTENT_SCALE_FACTOR(), -1024, 1024 );
+			kmMat4OrthographicProjection(&orthoMatrix, 0, sizePoint.width, 0, sizePoint.height, -1024, 1024 );
 			kmGLMultMatrix( &orthoMatrix );
 
 			kmGLMatrixMode(KM_GL_MODELVIEW);
@@ -208,7 +183,7 @@ CGFloat	__ccContentScaleFactor = 1;
 			kmGLLoadIdentity();
 
 			// issue #1334
-			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)size.width/size.height, 0.1f, zeye*2);
+			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)sizePoint.width/sizePoint.height, 0.1f, zeye*2);
 //			kmMat4PerspectiveProjection( &matrixPerspective, 60, (GLfloat)size.width/size.height, 0.1f, 1500);
 
 			kmGLMultMatrix(&matrixPerspective);
@@ -237,6 +212,7 @@ CGFloat	__ccContentScaleFactor = 1;
 	_projection = projection;
 
 	ccSetProjectionMatrixDirty();
+	[self createStatsLabel];
 }
 
 // override default logic
@@ -251,130 +227,24 @@ CGFloat	__ccContentScaleFactor = 1;
 	[self performSelector:@selector(drawScene) onThread:thread withObject:nil waitUntilDone:YES];
 }
 
-#pragma mark Director - Retina Display
-
--(CGFloat) contentScaleFactor
-{
-	return __ccContentScaleFactor;
-}
-
--(void) setContentScaleFactor:(CGFloat)scaleFactor
-{
-	if( scaleFactor != __ccContentScaleFactor ) {
-
-		__ccContentScaleFactor = scaleFactor;
-		_winSizeInPixels = CGSizeMake( _winSizeInPoints.width * scaleFactor, _winSizeInPoints.height * scaleFactor );
-
-		if( __view )
-			[self updateContentScaleFactor];
-
-		// update projection
-		[self setProjection:_projection];
-	}
-}
-
--(void) updateContentScaleFactor
-{
-	NSAssert( [__view respondsToSelector:@selector(setContentScaleFactor:)], @"cocos2d v2.0+ runs on iOS 4 or later");
-
-	[__view setContentScaleFactor: __ccContentScaleFactor];
-	_isContentScaleSupported = YES;
-}
-
--(BOOL) enableRetinaDisplay:(BOOL)enabled
-{
-	// Already enabled ?
-	if( enabled && __ccContentScaleFactor == 2 )
-		return YES;
-
-	// Already disabled
-	if( ! enabled && __ccContentScaleFactor == 1 )
-		return NO;
-
-	// setContentScaleFactor is not supported
-	if (! [__view respondsToSelector:@selector(setContentScaleFactor:)])
-		return NO;
-
-	// SD device
-	if ([[UIScreen mainScreen] scale] == 1.0)
-		return NO;
-
-	float newScale = enabled ? 2 : 1;
-	[self setContentScaleFactor:newScale];
-
-	// Load Hi-Res FPS label
-	[[CCFileUtils sharedFileUtils] buildSearchResolutionsOrder];
-	[self createStatsLabel];
-
-	return YES;
-}
-
 // overriden, don't call super
 -(void) reshapeProjection:(CGSize)size
 {
-	_winSizeInPoints = [__view bounds].size;
-	_winSizeInPixels = CGSizeMake(_winSizeInPoints.width * __ccContentScaleFactor, _winSizeInPoints.height *__ccContentScaleFactor);
-
+	_winSizeInPixels = size;
+	_winSizeInPoints = CGSizeMake(size.width/__ccContentScaleFactor, size.height/__ccContentScaleFactor);
+	
 	[self setProjection:_projection];
   
 	if( [_delegate respondsToSelector:@selector(directorDidReshapeProjection:)] )
 		[_delegate directorDidReshapeProjection:self];
 }
 
-static void
-GLToClipTransform(kmMat4 *transformOut)
-{
-	kmMat4 projection;
-	kmGLGetMatrix(KM_GL_PROJECTION, &projection);
-	
-	kmMat4 modelview;
-	kmGLGetMatrix(KM_GL_MODELVIEW, &modelview);
-	
-	kmMat4Multiply(transformOut, &projection, &modelview);
-}
-
 #pragma mark Director Point Convertion
-
--(CGPoint)convertToGL:(CGPoint)uiPoint
-{
-	kmMat4 transform;
-	GLToClipTransform(&transform);
-	
-	kmMat4 transformInv;
-	kmMat4Inverse(&transformInv, &transform);
-	
-	// Calculate z=0 using -> transform*[0, 0, 0, 1]/w
-	kmScalar zClip = transform.mat[14]/transform.mat[15];
-	
-	CGSize glSize = __view.bounds.size;
-	kmVec3 clipCoord = {2.0*uiPoint.x/glSize.width - 1.0, 1.0 - 2.0*uiPoint.y/glSize.height, zClip};
-	
-	kmVec3 glCoord;
-	kmVec3TransformCoord(&glCoord, &clipCoord, &transformInv);
-	
-//	NSLog(@"uiPoint: %@, glPoint: %@", NSStringFromCGPoint(uiPoint), NSStringFromCGPoint(ccp(glCoord.x, glCoord.y)));
-	return ccp(glCoord.x, glCoord.y);
-}
 
 -(CGPoint)convertTouchToGL:(UITouch*)touch
 {
 	CGPoint uiPoint = [touch locationInView: [touch view]];
 	return [self convertToGL:uiPoint];
-}
-
-
--(CGPoint)convertToUI:(CGPoint)glPoint
-{
-	kmMat4 transform;
-	GLToClipTransform(&transform);
-		
-	kmVec3 clipCoord;
-	// Need to calculate the zero depth from the transform.
-	kmVec3 glCoord = {glPoint.x, glPoint.y, 0.0};
-	kmVec3TransformCoord(&clipCoord, &glCoord, &transform);
-	
-	CGSize glSize = __view.bounds.size;
-	return ccp(glSize.width*(clipCoord.x*0.5 + 0.5), glSize.height*(-clipCoord.y*0.5 + 0.5));
 }
 
 -(void) end
@@ -393,11 +263,9 @@ GLToClipTransform(kmMat4 *transformOut)
 
 		if( view ) {
 			// set size
-			_winSizeInPixels = CGSizeMake(_winSizeInPoints.width * __ccContentScaleFactor, _winSizeInPoints.height *__ccContentScaleFactor);
-
-			if( __ccContentScaleFactor != 1 )
-				[self updateContentScaleFactor];
-
+			CGFloat scale = view.contentScaleFactor;
+			CGSize size = view.bounds.size;
+			_winSizeInPixels = CGSizeMake(size.width * scale, size.height * scale);
 		}
 	}
 }
@@ -474,21 +342,24 @@ GLToClipTransform(kmMat4 *transformOut)
 
 #pragma mark helper
 
--(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len
+-(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len contentScale:(CGFloat *)scale
 {
 	int device = [[CCConfiguration sharedConfiguration] runningDevice];
 
 	if( device == CCDeviceiPadRetinaDisplay) {
 		*datapointer = cc_fps_images_ipadhd_png;
 		*len = cc_fps_images_ipadhd_len();
+		*scale = 2;
 		
 	} else if( device == CCDeviceiPhoneRetinaDisplay || device == CCDeviceiPhone5RetinaDisplay ) {
 		*datapointer = cc_fps_images_hd_png;
 		*len = cc_fps_images_hd_len();
+		*scale = 2;
 
 	} else {
 		*datapointer = cc_fps_images_png;
 		*len = cc_fps_images_len();
+		*scale = 1;
 	}
 }
 

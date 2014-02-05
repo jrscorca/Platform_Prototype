@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2011 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +28,6 @@
 
 #import "ccConfig.h"
 #import "ccMacros.h"
-#import "CCDrawingPrimitives.h"
 #import "CCLabelAtlas.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
@@ -64,8 +64,9 @@
 	NSString *path = [fntFile stringByDeletingLastPathComponent];
 	NSString *textureFilename = [path stringByAppendingPathComponent:[dict objectForKey:@"textureFilename"]];
 	
-	NSUInteger width = [[dict objectForKey:@"itemWidth"] unsignedIntValue]  / CC_CONTENT_SCALE_FACTOR();
-	NSUInteger height = [[dict objectForKey:@"itemHeight"] unsignedIntValue] / CC_CONTENT_SCALE_FACTOR();
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	NSUInteger width = [[dict objectForKey:@"itemWidth"] unsignedIntValue]  / scale;
+	NSUInteger height = [[dict objectForKey:@"itemHeight"] unsignedIntValue] / scale;
 	NSUInteger startChar = [[dict objectForKey:@"firstChar"] unsignedIntValue];
 	
 	return [self initWithString:theString
@@ -106,8 +107,10 @@
 	CCTexture *texture = [_textureAtlas texture];
 	float textureWide = [texture pixelWidth];
 	float textureHigh = [texture pixelHeight];
-    float itemWidthInPixels = _itemWidth * CC_CONTENT_SCALE_FACTOR();
-    float itemHeightInPixels = _itemHeight * CC_CONTENT_SCALE_FACTOR();
+	
+	CGFloat scale = _textureAtlas.texture.contentScale;
+	float itemWidthInPixels = _itemWidth * scale;
+	float itemHeightInPixels = _itemHeight * scale;
 
 
 	for( NSUInteger i=0; i<n; i++)
@@ -151,7 +154,7 @@
 		quad.tr.vertices.y = (int)(_itemHeight);
 		quad.tr.vertices.z = 0.0f;
 
-		ccColor4B c = { _displayedColor.r, _displayedColor.g, _displayedColor.b, _displayedOpacity };
+		ccColor4B c = ccc4BFromccc4F(_displayColor);
 		quad.tl.colors = c;
 		quad.tr.colors = c;
 		quad.bl.colors = c;

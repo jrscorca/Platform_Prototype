@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2011 ForzeField Studios S.L. http://forzefield.com
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,17 +43,17 @@
 @synthesize blendFunc = _blendFunc;
 @synthesize fastMode = _fastMode;
 
-+ (id) streakWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(ccColor3B)color textureFilename:(NSString*)path
++ (id) streakWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(CCColor*)color textureFilename:(NSString*)path
 {
     return [[self alloc] initWithFade:fade minSeg:minSeg width:stroke color:color textureFilename:path];
 }
 
-+ (id) streakWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(ccColor3B)color texture:(CCTexture*)texture
++ (id) streakWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(CCColor*)color texture:(CCTexture*)texture
 {
     return [[self alloc] initWithFade:fade minSeg:minSeg width:stroke color:color texture:texture];
 }
 
-- (id) initWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(ccColor3B)color textureFilename:(NSString*)path
+- (id) initWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(CCColor*)color textureFilename:(NSString*)path
 {
     NSAssert(path != nil, @"Invalid filename");
 
@@ -60,7 +61,7 @@
     return [self initWithFade:fade minSeg:minSeg width:stroke color:color texture:texture];
 }
 
-- (id) initWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(ccColor3B)color texture:(CCTexture*)texture
+- (id) initWithFade:(float)fade minSeg:(float)minSeg width:(float)stroke color:(CCColor*)color texture:(CCTexture*)texture
 {
     self = [super init];
     if (self)
@@ -107,23 +108,25 @@
     _positionR = position;
 }
 
-- (void) setColor:(ccColor3B)color
+- (void) setColor:(CCColor*)color
 {
+    ccColor3B color3 = color.ccColor3b;
+    
     [super setColor:color];
 
     // Fast assignation
     for(int i = 0; i<_nuPoints*2; i++)
-        *((ccColor3B*) (_colorPointer+i*4)) = color;
+        *((ccColor3B*) (_colorPointer+i*4)) = color3;
 }
 
-- (void) setOpacity:(GLubyte)opacity
+- (void) setOpacity:(CGFloat)opacity
 {
-    NSAssert(NO, @"Set opacity no supported");
+    NSAssert(NO, @"Set opacity not supported");
 }
 
-- (GLubyte) opacity
+- (CGFloat) opacity
 {
-    NSAssert(NO, @"Opacity no supported");
+    NSAssert(NO, @"Opacity not supported");
     return 0;
 }
 
@@ -201,14 +204,10 @@
         _pointVertexes[_nuPoints] = _positionR;
         _pointState[_nuPoints] = 1.0f;
 
-        // Color asignation
+        // Color and opacity assignment
         const NSUInteger offset = _nuPoints*8;
-        *((ccColor3B*)(_colorPointer + offset)) = _displayedColor;
-        *((ccColor3B*)(_colorPointer + offset+4)) = _displayedColor;
-
-        // Opacity
-        _colorPointer[offset+3] = 255;
-        _colorPointer[offset+7] = 255;
+        *((ccColor4B*)(_colorPointer + offset)) = ccc4BFromccc4F(_displayColor);
+        *((ccColor4B*)(_colorPointer + offset+4)) = ccc4BFromccc4F(_displayColor);
 
         // Generate polygon
         if(_nuPoints > 0 && _fastMode )

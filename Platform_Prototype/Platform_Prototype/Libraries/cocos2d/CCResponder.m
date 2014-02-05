@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- * Copyright (c) 2013 Lars Birkemose
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,22 +70,22 @@
 
 #if ( TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR )
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 {    
     [[CCDirector sharedDirector].responderManager discardCurrentEvent];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
     [[CCDirector sharedDirector].responderManager discardCurrentEvent];
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     [[CCDirector sharedDirector].responderManager discardCurrentEvent];
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event
 {
     [[CCDirector sharedDirector].responderManager discardCurrentEvent];
 }

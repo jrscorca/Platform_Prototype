@@ -77,20 +77,16 @@
 
 #ifdef __CC_PLATFORM_IOS
 
-- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void) touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    UITouch* touch = [touches anyObject];
-    
     _tracking = YES;
     _touchInside = YES;
     
     [self touchEntered:touch withEvent:event];
 }
 
-- (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void) touchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    UITouch* touch = [touches anyObject];
-    
     if ([self hitTestWithWorldPos:[touch locationInWorld]])
     {
         if (!_touchInside)
@@ -109,10 +105,8 @@
     }
 }
 
-- (void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    UITouch* touch = [touches anyObject];
-    
     if (_touchInside)
     {
         [self touchUpInside:touch withEvent:event];
@@ -126,10 +120,8 @@
     _tracking = NO;
 }
 
-- (void) touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+- (void) touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    UITouch* touch = [touches anyObject];
-    
     if (_touchInside)
     {
         [self touchUpOutside:touch withEvent:event];
@@ -317,7 +309,7 @@
     [super onEnter];
 }
 
-- (void) setContentSizeType:(CCContentSizeType)contentSizeType
+- (void) setContentSizeType:(CCSizeType)contentSizeType
 {
     [super setContentSizeType:contentSizeType];
     [self needsLayout];
@@ -335,22 +327,22 @@
     [self needsLayout];
 }
 
-- (void) setPreferredSizeType:(CCContentSizeType)preferredSizeType
+- (void) setPreferredSizeType:(CCSizeType)preferredSizeType
 {
     self.contentSizeType = preferredSizeType;
 }
 
-- (CCContentSizeType) preferredSizeType
+- (CCSizeType) preferredSizeType
 {
     return self.contentSizeType;
 }
 
-- (void) setMaxSizeType:(CCContentSizeType)maxSizeType
+- (void) setMaxSizeType:(CCSizeType)maxSizeType
 {
     self.contentSizeType = maxSizeType;
 }
 
-- (CCContentSizeType) maxSizeType
+- (CCSizeType) maxSizeType
 {
     return self.contentSizeType;
 }

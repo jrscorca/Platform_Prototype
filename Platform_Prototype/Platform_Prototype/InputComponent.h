@@ -18,4 +18,6 @@
 -(void)down;
 -(void)noInput;
 
+@property (assign) int jumps;
+
 @end

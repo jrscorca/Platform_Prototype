@@ -1,8 +1,7 @@
 /*
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
- * Copyright (c) 2008-2010 Ricardo Quesada
- * Copyright (c) 2013 Viktor
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +20,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
  */
 
 #import "CCParticleSystem.h"
 
+// OS X
 @interface CCParticleSystem ()
 
-// Weak reference to the CCSpriteBatchNode that particle.
-@property (nonatomic,readwrite,unsafe_unretained) CCParticleBatchNode *batchNode;
+// Initialices the indices for the vertices.
+-(void) initIndices;
 
-// Altas Index.
-@property (nonatomic,readwrite) NSUInteger atlasIndex;
+// Initilizes the texture with a rectangle measured in points.
+-(void) initTexCoordsWithRect:(CGRect)rect;
 
-// Should be overriden by subclasses.
--(void) updateQuadWithParticle:(_CCParticle*)particle newPosition:(CGPoint)pos;
-
-// Should be overriden by subclasses.
--(void) postStep;
-
-// Update.
--(void) update: (CCTime) dt;
-
-// Update without time.
--(void) updateWithNoTime;
-
-// System full status.
--(BOOL) isFull;
+// Set sprite frame for system.
+-(void)setSpriteFrame:(CCSpriteFrame*)spriteFrame;
 
 @end

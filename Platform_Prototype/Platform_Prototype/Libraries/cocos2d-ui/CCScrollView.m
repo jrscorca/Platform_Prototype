@@ -66,7 +66,7 @@
 
 @implementation CCTapDownGestureRecognizer
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+-(void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 {
     if (self.state == UIGestureRecognizerStatePossible)
     {
@@ -74,12 +74,12 @@
     }
 }
 
--(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+-(void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event
 {
     self.state = UIGestureRecognizerStateFailed;
 }
 
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+-(void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
     self.state = UIGestureRecognizerStateFailed;
 }
@@ -169,7 +169,7 @@
 - (id) init
 {
     self = [self initWithContentNode:[CCNode node]];
-    self.contentSizeType = CCContentSizeTypeNormalized;
+    self.contentSizeType = CCSizeTypeNormalized;
     return self;
 }
 
@@ -182,7 +182,7 @@
     
     // Setup content node
     self.contentSize = CGSizeMake(1, 1);
-    self.contentSizeType = CCContentSizeTypeNormalized;
+    self.contentSizeType = CCSizeTypeNormalized;
     self.contentNode = contentNode;
     
     // Default properties

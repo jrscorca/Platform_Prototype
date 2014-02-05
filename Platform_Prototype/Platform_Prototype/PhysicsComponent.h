@@ -13,6 +13,6 @@
 @interface PhysicsComponent : Component
 
 -(CCPhysicsBody*)createPhysicsObjectOfSize:(CGSize)size;
--(BOOL)collisionBegin:(CCPhysicsCollisionPair *)pair character:(Character *)character platform:(Platform *)platform;
+-(BOOL)collisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)characterSprite platform:(CCSprite *)platformSprite;
 
 @end

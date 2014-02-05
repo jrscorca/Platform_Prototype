@@ -37,6 +37,7 @@
 #endif
 {
     CCSprite9Slice* _background;
+		CGFloat _scaleMultiplier;
 #ifdef __CC_PLATFORM_IOS
     BOOL _keyboardIsShown;
     float _keyboardHeight;
@@ -72,6 +73,12 @@
 
 /** The sprite frame used to render the text field's background. */
 @property (nonatomic,strong) CCSpriteFrame* backgroundSpriteFrame;
+
+/** The font size of the text field, defined in the unit specified by the heightUnit component of the contentSizeType. */
+@property (nonatomic,assign) float fontSize;
+
+/* The font size of the text field in points. */
+@property (nonatomic,readonly) float fontSizeInPoints;
 
 /** Padding from the edge of the text field's background to the native text field component. */
 @property (nonatomic,assign) float padding;

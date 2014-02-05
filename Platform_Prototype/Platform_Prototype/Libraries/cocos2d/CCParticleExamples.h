@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,59 +26,48 @@
  */
 
 #import "ccMacros.h"
-#import "CCParticleSystemQuad.h"
+#import "CCParticleSystem.h"
 
-@interface CCParticleFire: CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleFire: CCParticleSystem
+
 @end
 
-@interface CCParticleFireworks : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleFireworks : CCParticleSystem
+
 @end
 
-@interface CCParticleSun : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleSun : CCParticleSystem
+
 @end
 
-@interface CCParticleGalaxy : CCParticleSystemQuad
-//! Required for BridgeSupport.
--(id) init;
+@interface CCParticleGalaxy : CCParticleSystem
+
 @end
 
-@interface CCParticleFlower : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleFlower : CCParticleSystem
+
 @end
 
-@interface CCParticleMeteor : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleMeteor : CCParticleSystem
+
 @end
 
-@interface CCParticleSpiral : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleSpiral : CCParticleSystem
+
 @end
 
-@interface CCParticleExplosion : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleExplosion : CCParticleSystem
+
 @end
 
-@interface CCParticleSmoke : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleSmoke : CCParticleSystem
+
 @end
 
-@interface CCParticleSnow : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleSnow : CCParticleSystem
+
 @end
 
-@interface CCParticleRain : CCParticleSystemQuad
-// Required for BridgeSupport.
--(id) init;
+@interface CCParticleRain : CCParticleSystem
+
 @end

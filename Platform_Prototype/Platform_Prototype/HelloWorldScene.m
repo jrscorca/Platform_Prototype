@@ -46,16 +46,16 @@
     
     [self setupLevel];
     [self setupHUDObjects];
-    
     // done
 	return self;
 }
 
 -(void)setupHUDObjects{
-    buttonUp = [CCButton buttonWithTitle:@"up"];
-    buttonDown = [CCButton buttonWithTitle:@"down"];
-    buttonLeft = [CCButton buttonWithTitle:@"left"];
-    buttonRight = [CCButton buttonWithTitle:@"right"];
+    CCSpriteFrame *frame = [CCSpriteFrame frameWithImageNamed:@"Icon.png"];
+    buttonUp = [CCButton buttonWithTitle:nil spriteFrame:frame];
+    buttonDown = [CCButton buttonWithTitle:nil spriteFrame:frame];
+    buttonLeft = [CCButton buttonWithTitle:nil spriteFrame:frame];
+    buttonRight = [CCButton buttonWithTitle:nil spriteFrame:frame];
     
     buttonUp.positionType = CCPositionTypeNormalized;
     buttonDown.positionType = CCPositionTypeNormalized;
@@ -64,14 +64,23 @@
     
     buttonUp.position = ccp(0.2f, 0.3f);
     buttonDown.position = ccp(0.2f, 0.1f);
-    buttonLeft.position = ccp(0.1f, 0.2f);
-    buttonRight.position = ccp(0.3f, 0.2f);
+    buttonLeft.position = ccp(0.1f, 0.1f);
+    buttonRight.position = ccp(0.3f, 0.1f);
     
     [buttonUp setTarget:self selector:@selector(upButtonTouched:)];
     [buttonDown setTarget:self selector:@selector(downButtonTouched:)];
     [buttonLeft setTarget:self selector:@selector(leftButtonTouched:)];
     [buttonRight setTarget:self selector:@selector(rightButtonTouched:)];
     
+    buttonUp.scale = .85;
+    buttonDown.scale = .85;
+    buttonLeft.scale = .85;
+    buttonRight.scale = .85;
+    
+    [buttonUp setBackgroundOpacity:100 forState:CCControlStateNormal];
+    [buttonDown setBackgroundOpacity:100 forState:CCControlStateNormal];
+    [buttonLeft setBackgroundOpacity:100 forState:CCControlStateNormal];
+    [buttonRight setBackgroundOpacity:100 forState:CCControlStateNormal];
     
     [self addChild:buttonUp];
     [self addChild:buttonDown];
@@ -91,23 +100,17 @@
     CCSpriteBatchNode *spriteSheet = [CCSpriteBatchNode batchNodeWithFile:@"Mario_Mario.png"];
     [self addChild:spriteSheet];
     
-    platform = [[Platform alloc] init];
+    platform = [[Platform alloc] initWithPosition:ccp(200,200)];
     [physicsNode addChild:platform.sprite];
     
     character1 = [[Character alloc] init];
     [physicsNode addChild: character1.sprite];
     
-    CCSprite *groundSprite = [CCSprite spriteWithImageNamed: @"icon.png"];
-    //sprite.positionType = CCPositionTypeNormalized;
-    groundSprite.position = ccp(240.0f, 0.0f);
-    groundSprite.rotation = 0;
-    groundSprite.scaleX = 6;
+    groundPlatform = [[Platform alloc] initWithPosition:ccp(240,0)];
+    [physicsNode addChild:groundPlatform.sprite];
+    groundPlatform.sprite.scaleX = 6;
     
-    CGSize size = groundSprite.contentSize;
-    groundSprite.physicsBody = [CCPhysicsBody bodyWithRect:CGRectMake(0, 0, size.width, size.height) cornerRadius:0];
-    groundSprite.physicsBody.type = CCPhysicsBodyTypeStatic;
-    groundSprite.physicsBody.friction = kPlatformFriction;
-    [physicsNode addChild:groundSprite];
+
 }
 
 // -----------------------------------------------------------------------
@@ -156,18 +159,25 @@
 }
 
 -(void)updatePositionCheck:(CCTime)dt{
-    character1.sprite.positionType = CCPositionTypeNormalized;
+    character1.sprite.positionType = CCPositionTypePoints;
     if (character1.sprite.position.y < -100) {
-        character1.sprite.position = ccp(.5, .75);
+        //character1.sprite.positionType = CCPositionTypeNormalized;
+        character1.sprite.position = ccp(200, 60);
     }
+    character1.sprite.positionType = CCPositionTypePoints;
     if (character1.sprite.position.y > [[CCDirector sharedDirector] viewSize].height+100) {
-        character1.sprite.position = ccp(.5, .75);
+        //character1.sprite.positionType = CCPositionTypeNormalized;
+        character1.sprite.position = ccp(200, 60);
     }
+    character1.sprite.positionType = CCPositionTypePoints;
     if (character1.sprite.position.x < -100) {
-        character1.sprite.position = ccp(.5, .75);
+        //character1.sprite.positionType = CCPositionTypeNormalized;
+        character1.sprite.position = ccp(200, 60);
     }
+    character1.sprite.positionType = CCPositionTypePoints;
     if (character1.sprite.position.x > [[CCDirector sharedDirector] viewSize].width+100) {
-        character1.sprite.position = ccp(.5, .75);
+        //character1.sprite.positionType = CCPositionTypeNormalized;
+        character1.sprite.position = ccp(200, 60);
     }
 }
 
@@ -229,6 +239,9 @@
 }
 
 -(void)upButtonTouched:(CCButton*)sender{
+    if(character1.input.jumps < 2){
+        character1.input.jumps++;
+    }
     NSLog(@"up ended");
 }
 
@@ -244,9 +257,9 @@
     NSLog(@"right");
 }
 
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{
-
-    return [character1.physics collisionBegin:pair character:character1 platform:platform];
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)nodeA platform:(CCSprite *)nodeB{
+    BOOL result = [character1.physics collisionBegin:pair character:nodeA platform:nodeB];
+    return result;
 }
 
 -(BOOL)ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair player:(CCPhysicsBody *)nodeA platform:(CCPhysicsBody *)nodeB{

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- * Copyright (c) 2013 Lars Birkemose
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,33 +30,28 @@
 #import <Foundation/Foundation.h>
 #import "CCResponderManager.h"
 
-// -----------------------------------------------------------------
 /**
  *  CCResponder is the base class for all nodes.
- *  It exposes the touch and mouse interface to any node, which enables user interaction
+ *  It exposes the touch and mouse interface to any node, which enables user interaction.
  *
  *  To make a responder react to user interaction, the touchesXXX / mouseXXX event must be overridden.
  *  If this is not the case, the event will be passed on to the next responder.
- *  To force the events to be passed to next responder, call the super as last step, before returning from the event
+ *  To force the events to be passed to next responder, call the super as last step, before returning from the event.
  */
 @interface CCResponder : NSObject
 
-// -----------------------------------------------------------------
-/** 
- *  Enables user interaction on a node
- */
+
+/** Enables user interaction on a node. */
 @property ( nonatomic, assign, getter = isUserInteractionEnabled ) BOOL userInteractionEnabled;
 
-/** 
- *  Enables multiple touches inside a single node
- */
+/** Enables multiple touches inside a single node. */
 @property ( nonatomic, assign, getter = isMultipleTouchEnabled ) BOOL multipleTouchEnabled;
 
 /** 
  *  Locks the touch to the node if touch moved outside
  *  If a node claims user interaction, the touch will continue to be sent to the node, no matter where the touch is moved
  *  If the node does not claim user interaction, a touch will be cancelled, if moved outside the nodes detection area
- *  If the node does not claim user interaction, and a touch is moved from outside the nodes detection area, to inside, a touchesBegan will be generated
+ *  If the node does not claim user interaction, and a touch is moved from outside the nodes detection area, to inside, a touchBegan will be generated.
  */
 @property (nonatomic, assign) BOOL claimsUserInteraction;
 
@@ -66,141 +61,148 @@
  */
 @property (nonatomic, assign, getter = isExclusiveTouch) BOOL exclusiveTouch;
 
-// -----------------------------------------------------------------
-/**
- *  @name Initialize
- */
+/// -----------------------------------------------------------------------
+/// @name Initializing a CCResponder Object
+/// -----------------------------------------------------------------------
 
 /**
- *  Initialzes a new CCResponder
+ *  Initialzes a new CCResponder.
  *
- *  @return CCResponder instance
+ *  @return An CCResponder CCLabelBMFont Object.
  */
 - (id)init;
 
 #if ( TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR )
 
-// -----------------------------------------------------------------
-/**
- *  @name Touch handling
- */
+
+#pragma mark -
+#pragma mark Touch Handling Methods
+/// -----------------------------------------------------------------------
+/// @name Touch Handling Methods
+/// -----------------------------------------------------------------------
 
 /**
- *  Called then one or more touches began
- *  If touches are dragged inside nodes which does not claim user interaction, start will be called
- *  If node has exclusive touch, all other ongoing touches will be canceled
- *
- *  @param touches Contains a set of the touches
- *  @param event   Current event information
+ Called when a touch began.
+ 
+ If a touch is dragged inside a node which does not claim user interaction, a touchBegan will be generated.
+ If node has exclusive touch, all other ongoing touches will be canceled.
+ 
+ If a node wants to grab the touch, touchBegan must be overridden, even if empty. Overriding touchMoved is not enough.
+ 
+ To pass the touch further down the responder chain, call super touchBegan.
+ 
+    if (!thisNodeGrabsTouch) [super touchBegan:touch withEvent:event];
+ 
+ @param touch    Contains the touch.
+ @param event    Current event information.
  */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event;
 
 /**
- *  Called then one or more touches are moved
+ *  Called whan a touch moves.
  *
- *  @param touches Contains a set of the touches
- *  @param event   Current event information
+ *  @param touch    Contains the touch.
+ *  @param event    Current event information.
  */
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event;
 
 /**
- *  Called then one or more touches ended
+ *  Called when a touch ends.
  *
- *  @param touches Contains a set of the touches
- *  @param event   Current event information
+ *  @param touch    Contains the touch.
+ *  @param event    Current event information.
  */
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchEnded:(UITouch *)touch withEvent:(UIEvent *)event;
 
 /**
- *  Called then one or more touches were cancelled
- *  If touches are dragged outside nodes which does not claim user interaction, cancel will be called
- *  If another node with exclusive touch is activated, cancel will be called for all ongoing touches
+ *  Called when a touch was cancelled.
+ *  If a touch is dragged outside a node which does not claim user interaction, touchCancelled will be called.
+ *  If another node with exclusive touch is activated, touchCancelled will be called for all ongoing touches.
  *
- *  @param touches Contains a set of the touches
- *  @param event   Current event information
+ *  @param touch    Contains the touch.
+ *  @param event    Current event information.
  */
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event;
 
 #else
 
-// -----------------------------------------------------------------
-/**
- *  @name Mouse handling
- */
+
+#pragma mark -
+#pragma mark Mouse Handling Methods
+/// -----------------------------------------------------------------------
+/// @name Mouse Handling Methods
+/// -----------------------------------------------------------------------
 
 /**
- *  Called when left mouse button is pressed inside a node accepting user interaction
+ *  Called when left mouse button is pressed inside a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)mouseDown:(NSEvent *)theEvent;
 
 /**
- *  Called when left mouse button is dragged for a node accepting user interaction
+ *  Called when left mouse button is dragged for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)mouseDragged:(NSEvent *)theEvent;
 
 /**
- *  Called when left mouse button is released for a node accepting user interaction
+ *  Called when left mouse button is released for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)mouseUp:(NSEvent *)theEvent;
 
 /**
- *  Called when right mouse button is pressed inside a node accepting user interaction
+ *  Called when right mouse button is pressed inside a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)rightMouseDown:(NSEvent *)theEvent;
 
 /**
- *  Called when right mouse button is dragged for a node accepting user interaction
+ *  Called when right mouse button is dragged for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)rightMouseDragged:(NSEvent *)theEvent;
 
 /**
- *  Called when right mouse button is released for a node accepting user interaction
+ *  Called when right mouse button is released for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)rightMouseUp:(NSEvent *)theEvent;
 
 /**
- *  Called when middle mouse button is pressed inside a node accepting user interaction
+ *  Called when middle mouse button is pressed inside a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)otherMouseDown:(NSEvent *)theEvent;
 
 /**
- *  Called when middle mouse button is dragged for a node accepting user interaction
+ *  Called when middle mouse button is dragged for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)otherMouseDragged:(NSEvent *)theEvent;
 
 /**
- *  Called when middle mouse button is released for a node accepting user interaction
+ *  Called when middle mouse button is released for a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)otherMouseUp:(NSEvent *)theEvent;
 
 /**
- *  Called when scroll wheel is activated inside a node accepting user interaction
+ *  Called when scroll wheel is activated inside a node accepting user interaction.
  *
- *  @param theEvent The event created
+ *  @param theEvent The event created.
  */
 - (void)scrollWheel:(NSEvent *)theEvent;
 
 #endif
-
-
-// -----------------------------------------------------------------
 
 @end

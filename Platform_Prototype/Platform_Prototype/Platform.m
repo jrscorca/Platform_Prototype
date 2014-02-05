@@ -11,17 +11,18 @@
 
 @implementation Platform
 
--(id)init{
+-(id)initWithPosition:(CGPoint)position{
     if(self = [super init]){
         [self setup];
+        self.sprite.position = position;
     }
     return self;
 }
 
 -(void)setup{
-    CCSprite *platformSprite = [CCSprite spriteWithImageNamed: @"icon.png"];
-    platformSprite.positionType = CCPositionTypeNormalized;
-    platformSprite.position = ccp(.5, .5);
+    CCSprite *platformSprite = [CCSprite spriteWithImageNamed: @"Icon.png"];
+    //platformSprite.positionType = CCPositionTypeNormalized;
+    platformSprite.position = ccp(200, 150);
     platformSprite.rotation = 0;
     platformSprite.scaleX = 3;
     platformSprite.scaleY = .5;

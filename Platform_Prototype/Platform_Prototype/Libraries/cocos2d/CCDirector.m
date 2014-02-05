@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +45,6 @@
 #import "ccGLStateCache.h"
 #import "CCShaderCache.h"
 #import "ccFPSImages.h"
-#import "CCDrawingPrimitives.h"
 #import "CCConfiguration.h"
 #import "CCTransition.h"
 
@@ -71,12 +71,18 @@
 #pragma mark -
 #pragma mark Director - global variables (optimization)
 
+CGFloat	__ccContentScaleFactor = 1;
+
 // XXX it shoul be a Director ivar. Move it there once support for multiple directors is added
 NSUInteger	__ccNumberOfDraws = 0;
 
 #define kDefaultFPS		60.0	// 60 frames per second
 
 extern NSString * cocos2dVersion(void);
+
+@interface CCScheduler (Private)
+@property(nonatomic, assign) CCTime fixedUpdateInterval;
+@end
 
 @interface CCDirector (Private)
 -(void) setNextScene;
@@ -86,8 +92,6 @@ extern NSString * cocos2dVersion(void);
 -(void) calculateDeltaTime;
 // calculates the milliseconds per frame from the start of the frame
 -(void) calculateMPF;
-// returns the FPS image data pointer and len
--(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len;
 @end
 
 @implementation CCDirector
@@ -134,6 +138,12 @@ static CCDirector *_sharedDirector = nil;
 	return [super alloc];
 }
 
+// Force creation of a new singleton, useful to prevent state leaking during tests.
++ (void) resetSingleton
+{
+	_sharedDirector = nil;
+}
+
 - (id) init
 {
 	if( (self=[super init] ) ) {
@@ -175,7 +185,9 @@ static CCDirector *_sharedDirector = nil;
         _responderManager = [ CCResponderManager responderManager ];
 
 		_winSizeInPixels = _winSizeInPoints = CGSizeZero;
-                
+		
+		__ccContentScaleFactor = 1;
+		self.UIScaleFactor = 1;
 	}
 
 	return self;
@@ -263,7 +275,7 @@ static CCDirector *_sharedDirector = nil;
 
 -(float) getZEye
 {
-	return ( _winSizeInPixels.height / 1.1566f / CC_CONTENT_SCALE_FACTOR() );
+	return ( _winSizeInPixels.height / 1.1566f / __ccContentScaleFactor );
 }
 
 -(void) setViewport
@@ -315,7 +327,12 @@ static CCDirector *_sharedDirector = nil;
 		__view = view;
 
 		// set size
-		_winSizeInPixels = _winSizeInPoints = CCNSSizeToCGSize( [__view bounds].size );
+		CGSize size = CCNSSizeToCGSize(__view.bounds.size);
+		CGFloat scale = __view.layer.contentsScale ?: 1.0;
+		
+		_winSizeInPixels = CGSizeMake(size.width*scale, size.height*scale);
+		_winSizeInPoints = size;
+		__ccContentScaleFactor = scale;
 
 		// it could be nil
 		if( view ) {
@@ -338,16 +355,78 @@ static CCDirector *_sharedDirector = nil;
 
 #pragma mark Director Scene Landscape
 
+-(CGFloat) contentScaleFactor
+{
+	return __ccContentScaleFactor;
+}
+
+-(void) setContentScaleFactor:(CGFloat)scaleFactor
+{
+	NSAssert(scaleFactor > 0.0, @"scaleFactor must be positive.");
+	
+	if( scaleFactor != __ccContentScaleFactor ) {
+		__ccContentScaleFactor = scaleFactor;
+		_winSizeInPoints = CGSizeMake( _winSizeInPixels.width / scaleFactor, _winSizeInPixels.height / scaleFactor );
+
+		// update projection
+		[self setProjection:_projection];
+		
+		[[CCFileUtils sharedFileUtils] buildSearchResolutionsOrder];
+		[self createStatsLabel];
+	}
+}
+
+static void
+GLToClipTransform(kmMat4 *transformOut)
+{
+	kmMat4 projection;
+	kmGLGetMatrix(KM_GL_PROJECTION, &projection);
+	
+	kmMat4 modelview;
+	kmGLGetMatrix(KM_GL_MODELVIEW, &modelview);
+	
+	kmMat4Multiply(transformOut, &projection, &modelview);
+}
+
+-(CGFloat)flipY
+{
+	return -1.0;
+}
+
 -(CGPoint)convertToGL:(CGPoint)uiPoint
 {
-	CCLOG(@"CCDirector#convertToGL: OVERRIDE ME.");
-	return CGPointZero;
+	kmMat4 transform;
+	GLToClipTransform(&transform);
+	
+	kmMat4 transformInv;
+	kmMat4Inverse(&transformInv, &transform);
+	
+	// Calculate z=0 using -> transform*[0, 0, 0, 1]/w
+	kmScalar zClip = transform.mat[14]/transform.mat[15];
+	
+	CGSize glSize = __view.bounds.size;
+	kmVec3 clipCoord = {2.0*uiPoint.x/glSize.width - 1.0, 2.0*uiPoint.y/glSize.height - 1.0, zClip};
+	clipCoord.y *= self.flipY;
+	
+	kmVec3 glCoord;
+	kmVec3TransformCoord(&glCoord, &clipCoord, &transformInv);
+	
+//	NSLog(@"uiPoint: %@, glPoint: %@", NSStringFromCGPoint(uiPoint), NSStringFromCGPoint(ccp(glCoord.x, glCoord.y)));
+	return ccp(glCoord.x, glCoord.y);
 }
 
 -(CGPoint)convertToUI:(CGPoint)glPoint
 {
-	CCLOG(@"CCDirector#convertToUI: OVERRIDE ME.");
-	return CGPointZero;
+	kmMat4 transform;
+	GLToClipTransform(&transform);
+		
+	kmVec3 clipCoord;
+	// Need to calculate the zero depth from the transform.
+	kmVec3 glCoord = {glPoint.x, glPoint.y, 0.0};
+	kmVec3TransformCoord(&clipCoord, &glCoord, &transform);
+	
+	CGSize glSize = __view.bounds.size;
+	return ccp(glSize.width*(clipCoord.x*0.5 + 0.5), glSize.height*(self.flipY*clipCoord.y*0.5 + 0.5));
 }
 
 -(CGSize)viewSize
@@ -360,9 +439,17 @@ static CCDirector *_sharedDirector = nil;
 	return _winSizeInPixels;
 }
 
+-(CGSize)designSize
+{
+	// Return the viewSize unless designSize has been set.
+	return (CGSizeEqualToSize(_designSize, CGSizeZero) ? self.viewSize : _designSize);
+}
+
 -(void) reshapeProjection:(CGSize)newWindowSize
 {
-	_winSizeInPixels = _winSizeInPoints = newWindowSize;
+	_winSizeInPixels = newWindowSize;
+	_winSizeInPoints = CGSizeMake( _winSizeInPixels.width / __ccContentScaleFactor, _winSizeInPixels.height / __ccContentScaleFactor );
+	
 	[self setProjection:_projection];
 }
 
@@ -377,18 +464,21 @@ static CCDirector *_sharedDirector = nil;
 	[self startAnimation];
 }
 
-/*
--(void) replaceScene: (CCScene*) scene
+- (void)presentScene:(CCScene *)scene
 {
-	NSAssert( _runningScene, @"Use runWithScene: instead to start the director");
-	NSAssert( scene != nil, @"Argument must be non-nil");
+    if (_runningScene)
+        [self replaceScene:scene];
+    else
+        [self runWithScene:scene];
+}
 
-	NSUInteger index = [_scenesStack count];
-
-	_sendCleanupToScene = YES;
-	[_scenesStack replaceObjectAtIndex:index-1 withObject:scene];
-	_nextScene = scene;	// _nextScene is a weak ref
-}*/
+- (void)presentScene:(CCScene *)scene withTransition:(CCTransition *)transition
+{
+    if (_runningScene)
+        [self replaceScene:scene withTransition:transition];
+    else
+        [self runWithScene:scene];
+}
 
 - (void) pushScene: (CCScene*) scene
 {
@@ -406,7 +496,7 @@ static CCDirector *_sharedDirector = nil;
     
     [_scenesStack addObject:scene];
     _sendCleanupToScene = NO;
-    [transition performSelector:@selector(replaceScene:) withObject:scene];
+    [transition performSelector:@selector(startTransition:) withObject:scene];
 }
 
 -(void) popScene
@@ -437,7 +527,7 @@ static CCDirector *_sharedDirector = nil;
         [_scenesStack removeLastObject];
         CCScene * incomingScene = [_scenesStack lastObject];
         _sendCleanupToScene = YES;
-        [transition performSelector:@selector(replaceScene:) withObject:incomingScene];
+        [transition performSelector:@selector(startTransition:) withObject:incomingScene];
     }
 }
 
@@ -501,7 +591,19 @@ static CCDirector *_sharedDirector = nil;
 {
     // the transition gets to become the running scene
     _sendCleanupToScene = YES;
-    [transition performSelector:@selector(replaceScene:) withObject:scene];
+    [transition performSelector:@selector(startTransition:) withObject:scene];
+}
+
+// -----------------------------------------------------------------
+
+- (void)startTransition:(CCTransition *)transition
+{
+	NSAssert(transition, @"Argument must be non-nil");
+    NSAssert(_runningScene, @"There must be a running scene");
+    
+    [_scenesStack removeLastObject];
+    [_scenesStack addObject:transition];
+    _nextScene = transition;
 }
 
 // -----------------------------------------------------------------
@@ -531,7 +633,6 @@ static CCDirector *_sharedDirector = nil;
 	[CCLabelBMFont purgeCachedData];
 
 	// Purge all managers / caches
-	ccDrawFree();
 	[CCAnimationCache purgeSharedAnimationCache];
 	[CCSpriteFrameCache purgeSharedSpriteFrameCache];
 	[CCTextureCache purgeSharedTextureCache];
@@ -553,9 +654,6 @@ static CCDirector *_sharedDirector = nil;
 
 -(void) setNextScene
 {
-    // -----------------------------------------------------------------
-    // v2.5 functionality
-    
     // If next scene is a transition, the transition has just started
     // Make transition the running scene.
     // Outgoing scene will continue to run
@@ -576,34 +674,31 @@ static CCDirector *_sharedDirector = nil;
     if ([_runningScene isKindOfClass:[CCTransition class]])
     {
         [_runningScene onExit];
-		if( _sendCleanupToScene) [_runningScene cleanup];
+        [_runningScene cleanup];
         _runningScene = nil;
         _runningScene = _nextScene;
         _nextScene = nil;
         return;
     }
-    // -----------------------------------------------------------------
 
-	Class transClass = [CCTransition class];
-	BOOL runningIsTransition = [_runningScene isKindOfClass:transClass];
-	BOOL newIsTransition = [_nextScene isKindOfClass:transClass];
-
-	// If it is not a transition, call onExit/cleanup
-	if( ! newIsTransition ) {
+    
+	// if next scene is not a transition, force exit calls
+	if (![_nextScene isKindOfClass:[CCTransition class]])
+    {
 		[_runningScene onExitTransitionDidStart];
 		[_runningScene onExit];
 
 		// issue #709. the root node (scene) should receive the cleanup message too
 		// otherwise it might be leaked.
-		if( _sendCleanupToScene)
-			[_runningScene cleanup];
+		if (_sendCleanupToScene) [_runningScene cleanup];
 	}
-
 
 	_runningScene = _nextScene;
 	_nextScene = nil;
 
-	if( ! runningIsTransition ) {
+    // if running scene is not a transition, force enter calls
+	if (![_runningScene isKindOfClass:[CCTransition class]])
+    {
 		[_runningScene onEnter];
 		[_runningScene onEnterTransitionDidFinish];
 	}
@@ -657,6 +752,16 @@ static CCDirector *_sharedDirector = nil;
 	CCLOG(@"cocos2d: Director#setAnimationInterval. Override me");
 }
 
+- (CCTime)fixedUpdateInterval
+{
+	return self.scheduler.fixedUpdateInterval;
+}
+
+-(void)setFixedUpdateInterval:(CCTime)fixedUpdateInterval
+{
+	self.scheduler.fixedUpdateInterval = fixedUpdateInterval;
+}
+
 
 // display statistics
 -(void) showStats
@@ -704,20 +809,16 @@ static CCDirector *_sharedDirector = nil;
 
 #pragma mark Director - Helper
 
--(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len
+-(void)getFPSImageData:(unsigned char**)datapointer length:(NSUInteger*)len contentScale:(CGFloat *)scale
 {
 	*datapointer = cc_fps_images_png;
 	*len = cc_fps_images_len();
+	*scale = 1.0;
 }
 
 -(void) createStatsLabel
 {
-	CCTexture *texture;
-	CCTextureCache *textureCache = [CCTextureCache sharedTextureCache];
-	
 	if( _FPSLabel && _SPFLabel ) {
-
-		[textureCache removeTextureForKey:@"cc_fps_images"];
 		_FPSLabel = nil;
 		_SPFLabel = nil;
 		_drawsLabel = nil;
@@ -730,12 +831,13 @@ static CCDirector *_sharedDirector = nil;
 
 	unsigned char *data;
 	NSUInteger data_len;
-	[self getFPSImageData:&data length:&data_len];
+	CGFloat contentScale = 0;
+	[self getFPSImageData:&data length:&data_len contentScale:&contentScale];
 	
 	NSData *nsdata = [NSData dataWithBytes:data length:data_len];
 	CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData( (__bridge CFDataRef) nsdata);
 	CGImageRef imageRef = CGImageCreateWithPNGDataProvider(imgDataProvider, NULL, true, kCGRenderingIntentDefault);
-	texture = [textureCache addCGImage:imageRef forKey:@"cc_fps_images"];
+	CCTexture *texture = [[CCTexture alloc] initWithCGImage:imageRef contentScale:contentScale];
 	CGDataProviderRelease(imgDataProvider);
 	CGImageRelease(imageRef);
 
@@ -744,10 +846,12 @@ static CCDirector *_sharedDirector = nil;
 	_drawsLabel = [[CCLabelAtlas alloc]  initWithString:@"000" texture:texture itemWidth:12 itemHeight:32 startCharMap:'.'];
 
 	[CCTexture setDefaultAlphaPixelFormat:currentFormat];
-
-	[_drawsLabel setPosition: ccpAdd( ccp(0,34), CC_DIRECTOR_STATS_POSITION ) ];
-	[_SPFLabel setPosition: ccpAdd( ccp(0,17), CC_DIRECTOR_STATS_POSITION ) ];
-	[_FPSLabel setPosition: CC_DIRECTOR_STATS_POSITION ];
+	
+	CGPoint offset = [self convertToGL:ccp(0, __view.bounds.size.height)];
+	CGPoint pos = ccpAdd(CC_DIRECTOR_STATS_POSITION, offset);
+	[_drawsLabel setPosition: ccpAdd( ccp(0,34), pos ) ];
+	[_SPFLabel setPosition: ccpAdd( ccp(0,17), pos ) ];
+	[_FPSLabel setPosition: pos ];
 }
 
 @end

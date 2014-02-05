@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +58,7 @@
 
 /**
  *  Creates and returns a label object using the specified text, character map bitmap file, element width, element height and the starting character index values.
- 
+ *
  *  @param string       Label text.
  *  @param charmapfile  Character map bitmap file.
  *  @param w            element width in points.
@@ -99,11 +100,11 @@
 /**
  *  Initializes and returns a label object using the specified text, texure, element width, element height and the starting character index values.
  *
- *  @param string       Label text.
- *  @param charmapfile  Character map bitmap file (the Atlas).
- *  @param w            element width in points.
- *  @param h            element height in points.
- *  @param firstElement Starting character of the atlas.
+ *  @param theString Label text.
+ *  @param texture   The texture to use.
+ *  @param w         Element width in points.
+ *  @param h         Element height in points.
+ *  @param c         Index of character.
  *
  *  @return An initialized CCLabelAtlas Object.
  */

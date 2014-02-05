@@ -25,9 +25,6 @@
 #import "CCPhysicsJoint.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
 
-// TODO temporary
-static inline void NYI(){@throw @"Not Yet Implemented";}
-
 
 @interface CCNode(Private)
 -(CGAffineTransform)nonRigidTransform;
@@ -47,6 +44,8 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 {
 	if((self = [super init])){
 		_constraint = [ChipmunkPivotJoint pivotJointWithBodyA:bodyA.body bodyB:bodyB.body pivot:anchor];
+		_constraint.userData = self;
+		
 		_anchor = anchor;
 	}
 	
@@ -80,6 +79,8 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 {
 	if((self = [super init])){
 		_constraint = [ChipmunkPinJoint pinJointWithBodyA:bodyA.body bodyB:bodyB.body anchorA:anchorA anchorB:anchorB];
+		_constraint.userData = self;
+		
 		_anchorA = anchorA;
 		_anchorB = anchorB;
 	}
@@ -92,8 +93,10 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 -(void)willAddToPhysicsNode:(CCPhysicsNode *)physics
 {
 	CCPhysicsBody *bodyA = self.bodyA, *bodyB = self.bodyB;
-	_constraint.anchorA = cpTransformPoint(bodyA.node.nonRigidTransform, _anchorA);
-	_constraint.anchorB = cpTransformPoint(bodyB.node.nonRigidTransform, _anchorB);
+	cpVect anchorA = _constraint.anchorA = cpTransformPoint(bodyA.node.nonRigidTransform, _anchorA);
+	cpVect anchorB = _constraint.anchorB = cpTransformPoint(bodyB.node.nonRigidTransform, _anchorB);
+	
+	_constraint.dist = cpvdist([bodyA.body localToWorld:anchorA], [bodyB.body localToWorld:anchorB]);
 }
 
 @end
@@ -112,6 +115,8 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 {
 	if((self = [super init])){
 		_constraint = [ChipmunkSlideJoint slideJointWithBodyA:bodyA.body bodyB:bodyB.body anchorA:anchorA anchorB:anchorB min:min max:max];
+		_constraint.userData = self;
+		
 		_anchorA = anchorA;
 		_anchorB = anchorB;
 	}
@@ -145,6 +150,8 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 {
 	if((self = [super init])){
 		_constraint = [ChipmunkDampedSpring dampedSpringWithBodyA:bodyA.body bodyB:bodyB.body anchorA:anchorA anchorB:anchorB restLength:restLength stiffness:stiffness damping:damping];
+		_constraint.userData = self;
+		
 		_anchorA = anchorA;
 		_anchorB = anchorB;
 	}
@@ -169,7 +176,7 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 -(id)init
 {
 	if((self = [super init])){
-		
+		_valid = YES;
 	}
 	
 	return self;
@@ -233,23 +240,45 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 }
 
 -(CCPhysicsBody *)bodyA {return self.constraint.bodyA.userData;}
--(void)setBodyA:(CCPhysicsBody *)bodyA {NYI();}
+//-(void)setBodyA:(CCPhysicsBody *)bodyA {NYI();}
 
 -(CCPhysicsBody *)bodyB {return self.constraint.bodyB.userData;}
--(void)setBodyB:(CCPhysicsBody *)bodyB {NYI();}
+//-(void)setBodyB:(CCPhysicsBody *)bodyB {NYI();}
 
 -(CGFloat)maxForce {return self.constraint.maxForce;}
--(void)setMaxForce:(CGFloat)maxForce {self.constraint.maxForce = maxForce;}
+-(void)setMaxForce:(CGFloat)maxForce
+{
+	NSAssert(maxForce > 0.0, @"Max force must be greater than 0.");
+	self.constraint.maxForce = maxForce;
+}
 
 -(CGFloat)impulse {return self.constraint.impulse;}
 
 -(void)invalidate {
+	_valid = NO;
+	
 	[self tryRemoveFromPhysicsNode:self.bodyA.physicsNode];
 	[self.bodyA removeJoint:self];
 	[self.bodyB removeJoint:self];
 }
 
--(void)setBreakingForce:(CGFloat)breakingForce {NYI();}
+static void
+BreakConstraint(cpConstraint *constraint, cpSpace *space)
+{
+	CCPhysicsJoint *joint = [[ChipmunkConstraint constraintFromCPConstraint:constraint] userData];
+	
+	// Divide by the timestep to convent the impulse to a force.
+	if(cpConstraintGetImpulse(constraint)/cpSpaceGetCurrentTimeStep(space) > joint.breakingForce){
+		[joint invalidate];
+	}
+}
+
+-(void)setBreakingForce:(CGFloat)breakingForce
+{
+	NSAssert(breakingForce > 0.0, @"Breaking force must be greater than 0.");
+	_breakingForce = breakingForce;
+	cpConstraintSetPostSolveFunc(self.constraint.constraint, breakingForce < INFINITY ? BreakConstraint : NULL);
+}
 
 @end
 

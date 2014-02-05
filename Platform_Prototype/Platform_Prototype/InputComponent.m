@@ -45,14 +45,20 @@
 -(void)characterUp{
     Character *character = ((Character*)_parent);
     
-    
-    if (character.sprite.physicsBody.velocity.y <= 100){
-        [character.sprite.physicsBody applyForce:ccp(0, 5000)];
+    if(character.input.jumps == 1){
+        character.sprite.physicsBody.velocity = ccp(character.sprite.physicsBody.velocity.x, 0);
+        [character.sprite.physicsBody applyForce:ccp(0, 15000)];
+        character.input.jumps++;
+    }else if (character.sprite.physicsBody.velocity.y == 0 && (character.input.jumps == 0) ){
+        [character.sprite.physicsBody applyForce:ccp(0, 15000)];
+
     }
     NSLog(@"%f",character.sprite.physicsBody.velocity.y);
+    /*
     if (character.sprite.physicsBody.velocity.y > 100) {
         character.sprite.physicsBody.velocity = ccp(character.sprite.physicsBody.velocity.x, 100);
     }
+     */
 }
 
 -(void)characterRight{
@@ -92,7 +98,7 @@
 
 -(void)noInput{
     Character *character = ((Character*)_parent);
-   [character.sprite stopAction:[character.sprite getActionByTag:1]];
+    [character.sprite stopAction:[character.sprite getActionByTag:1]];
     [character.animation runIdleAction];
 }
 

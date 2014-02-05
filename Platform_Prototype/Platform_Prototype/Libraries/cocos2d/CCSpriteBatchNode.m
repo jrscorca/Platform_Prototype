@@ -2,9 +2,9 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (C) 2009 Matt Oswald
- *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,6 @@
 #import "ccConfig.h"
 #import "CCSprite.h"
 #import "CCSpriteBatchNode.h"
-#import "CCDrawingPrimitives.h"
 #import "CCTextureCache.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
@@ -170,7 +169,10 @@ const NSUInteger defaultCapacity = 0;
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
 	NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSpriteBatchNode only supports CCSprites as children");
-	NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCSprite is not using the same texture id");
+    
+    if(child.texture) {
+        NSAssert( (child.texture.name == _textureAtlas.texture.name), @"CCSprite is not using the same texture id");
+    }
 
 	[super addChild:child z:z name:name];
 
@@ -505,25 +507,25 @@ const NSUInteger defaultCapacity = 0;
 // addChild helper, faster than insertChild
 -(void) appendChild:(CCSprite*)sprite
 {
-	_isReorderChildDirty=YES;
-	[sprite setBatchNode:self];
-	[sprite setDirty: YES];
-
-	if(_textureAtlas.totalQuads == _textureAtlas.capacity)
-		[self increaseAtlasCapacity];
-
+    _isReorderChildDirty=YES;
+    [sprite setBatchNode:self];
+    [sprite setDirty: YES];
+    
+    if(_textureAtlas.totalQuads == _textureAtlas.capacity)
+        [self increaseAtlasCapacity];
+    
     [_descendants addObject:sprite];
+    
+    NSUInteger index=_descendants.count-1;
+    
+    sprite.atlasIndex=index;
+    
+    ccV3F_C4B_T2F_Quad quad = [sprite quad];
+    [_textureAtlas insertQuad:&quad atIndex:index];
+    
+    for(CCSprite* child in sprite.children)
+        [self appendChild:child];
 
-	NSUInteger index=_descendants.count-1;
-
-	sprite.atlasIndex=index;
-
-	ccV3F_C4B_T2F_Quad quad = [sprite quad];
-	[_textureAtlas insertQuad:&quad atIndex:index];
-
-	// add children recursively
-    for (CCSprite* child in sprite.children)
-		[self appendChild:child];
 }
 
 

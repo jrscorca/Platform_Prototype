@@ -9,6 +9,7 @@
 #import "PhysicsComponent.h"
 #import "Character.h"
 #import "Platform.h"
+#import "InputComponent.h"
 
 @implementation PhysicsComponent
 
@@ -24,14 +25,16 @@
 }
 
 
--(BOOL)collisionBegin:(CCPhysicsCollisionPair *)pair character:(Character *)character platform:(Platform *)platform{
+-(BOOL)collisionBegin:(CCPhysicsCollisionPair *)pair character:(CCSprite *)characterSprite platform:(CCSprite *)platformSprite{
     int offset = 0;
-    if(character.sprite.physicsBody.velocity.y<0){
-        offset =(character.sprite.contentSize.height*character.sprite.scaleY)/4;
+    if(characterSprite.physicsBody.velocity.y<0){
+        offset =(characterSprite.contentSize.height*characterSprite.scaleY)/4;
     }
-    int a = character.sprite.position.y-((character.sprite.contentSize.height*character.sprite.scaleY)/2)+offset;
-    int b =platform.sprite.position.y+((platform.sprite.contentSize.height*platform.sprite.scaleY)/2);
+    int a = characterSprite.position.y-((characterSprite.contentSize.height*characterSprite.scaleY)/2)+offset;
+    int b =platformSprite.position.y+((platformSprite.contentSize.height*platformSprite.scaleY)/2);
     if(a >= b){
+        Character *character = _parent;
+        character.input.jumps = 0;
         return YES;
     }
     return NO;

@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2013 Apportable Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +25,31 @@
 
 #import "CCLayout.h"
 
+/**
+ *  Declares the possible directions for laying out nodes in a CCLayoutBox.
+ */
 typedef NS_ENUM(NSUInteger, CCLayoutBoxDirection)
 {
+    /// The children will be layout out in a horizontal line.
     CCLayoutBoxDirectionHorizontal,
+    
+    /// The children will be layout out in a vertical line.
     CCLayoutBoxDirectionVertical,
 };
 
+/**
+ *  The box layout lays out its children in a horizontal or vertical row. Optionally you can set a spacing between the child nodes.
+ */
 @interface CCLayoutBox : CCLayout
 
+/**
+ *  The direction is either horizontal or vertical.
+ */
 @property (nonatomic,assign) CCLayoutBoxDirection direction;
+
+/**
+ *  The spacing in points between the child nodes.
+ */
 @property (nonatomic,assign) float spacing;
 
 @end

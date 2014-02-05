@@ -56,7 +56,7 @@
     CCFileUtils *sharedFileUtils = [CCFileUtils sharedFileUtils];
     
     // Setup file utils for use with SpriteBuilder
-    [sharedFileUtils setEnableFallbackSuffixes:NO];
+    [sharedFileUtils setEnableiPhoneResourcesOniPad:NO];
     
     sharedFileUtils.directoriesDict =
     [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -95,7 +95,7 @@
     loadedSpriteSheets = [[NSMutableSet alloc] init];
     
     // Setup resolution scale and default container size
-    animationManager.rootContainerSize = [[CCDirector sharedDirector] viewSize];
+    animationManager.rootContainerSize = [CCDirector sharedDirector].designSize;
     
     return self;
 }
@@ -276,13 +276,13 @@ static inline float readFloat(CCBReader *self)
     }
     else
     {
-        // using a memcpy since the compiler isn't
-        // doing the float ptr math correctly on device.
-        float* pF = (float*)(self->bytes+self->currentByte);
-        float f = 0;
-        memcpy(&f, pF, sizeof(float));
+        volatile union {
+            float f;
+            int i;
+        } t;
+        t.i = *(int *)(self->bytes + self->currentByte);
         self->currentByte+=4;
-        return f;
+        return t.f;
     }
 }
 
@@ -342,7 +342,7 @@ static inline float readFloat(CCBReader *self)
             [node setValue:[NSValue valueWithPoint:ccp(x,y)] forKey:name];
 #endif
             CCPositionType pType = CCPositionTypeMake(xUnit, yUnit, corner);
-            [node setValue:[NSValue valueWithBytes:&pType objCType:@encode(ccColor4B)] forKey:[name stringByAppendingString:@"Type"]];
+            [node setValue:[NSValue valueWithBytes:&pType objCType:@encode(CCPositionType)] forKey:[name stringByAppendingString:@"Type"]];
             
             
             if ([animatedProps containsObject:name])
@@ -390,8 +390,8 @@ static inline float readFloat(CCBReader *self)
             [node setValue:[NSValue valueWithSize:size] forKey:name];
 #endif
             
-            CCContentSizeType sizeType = CCContentSizeTypeMake(xUnit, yUnit);
-            [node setValue:[NSValue valueWithBytes:&sizeType objCType:@encode(CCContentSizeType)] forKey:[name stringByAppendingString:@"Type"]];
+            CCSizeType sizeType = CCSizeTypeMake(xUnit, yUnit);
+            [node setValue:[NSValue valueWithBytes:&sizeType objCType:@encode(CCSizeType)] forKey:[name stringByAppendingString:@"Type"]];
         }
     }
     else if (type == kCCBPropTypeScaleLock)
@@ -453,7 +453,7 @@ static inline float readFloat(CCBReader *self)
         
         if (setProp)
         {
-            if (sType == 1) f *= [CCDirector sharedDirector].positionScaleFactor;
+            if (sType == 1) f *= [CCDirector sharedDirector].UIScaleFactor;
             [node setValue:[NSNumber numberWithFloat:f] forKey:name];
         }
     }
@@ -534,35 +534,18 @@ static inline float readFloat(CCBReader *self)
             }
         }
     }
-    else if (type == kCCBPropTypeColor3)
+    else if (type == kCCBPropTypeColor4 ||
+             type == kCCBPropTypeColor3)
     {
-        int r = readByte(self);
-        int g = readByte(self);
-        int b = readByte(self);
+        CGFloat r = readFloat(self);
+        CGFloat g = readFloat(self);
+        CGFloat b = readFloat(self);
+        CGFloat a = readFloat(self);
         
         if (setProp)
         {
-            ccColor3B c = ccc3(r,g,b);
-            NSValue* cVal = [NSValue value:&c withObjCType:@encode(ccColor3B)];
-            [node setValue:cVal forKey:name];
+            CCColor* cVal = [CCColor colorWithRed:r green:g blue:b alpha:a];
             
-            if ([animatedProps containsObject:name])
-            {
-                [animationManager setBaseValue:cVal forNode:node propertyName:name];
-            }
-        }
-    }
-    else if (type == kCCBPropTypeColor4)
-    {
-        int r = readByte(self);
-        int g = readByte(self);
-        int b = readByte(self);
-        int a = readByte(self);
-        
-        if (setProp)
-        {
-            ccColor4B c = ccc4(r,g,b,a);
-            NSValue* cVal = [NSValue value:&c withObjCType:@encode(ccColor4B)];
             [node setValue:cVal forKey:name];
             
             if ([animatedProps containsObject:name])
@@ -584,10 +567,8 @@ static inline float readFloat(CCBReader *self)
         
         if (setProp)
         {
-            ccColor4F c = ccc4f(r, g, b, a);
-            ccColor4F cVar = ccc4f(rVar, gVar, bVar, aVar);
-            NSValue* cVal = [NSValue value:&c withObjCType:@encode(ccColor4F)];
-            NSValue* cVarVal = [NSValue value:&cVar withObjCType:@encode(ccColor4F)];
+            CCColor* cVal = [CCColor colorWithRed:r green:g blue:b alpha:a];;
+            CCColor* cVarVal = [CCColor colorWithRed:rVar green:gVar blue:bVar alpha:aVar];
             NSString* nameVar = [NSString stringWithFormat:@"%@Var",name];
             [node setValue:cVal forKey:name];
             [node setValue:cVarVal forKey:nameVar];
@@ -709,7 +690,9 @@ static inline float readFloat(CCBReader *self)
         // Load sub file
         NSString* path = [[CCFileUtils sharedFileUtils] fullPathForFilename:ccbFileName];
         NSData* d = [NSData dataWithContentsOfFile:path];
-        
+
+        NSAssert(d,@"Failed to find ccb file: %@",ccbFileName);
+
         CCBReader* reader = [[CCBReader alloc] init];
         reader.animationManager.rootContainerSize = parent.contentSize;
         
@@ -774,14 +757,14 @@ static inline float readFloat(CCBReader *self)
     }
     else if (type == kCCBPropTypeColor3)
     {
-        int r = readByte(self);
-        int g = readByte(self);
-        int b = readByte(self);
+        CGFloat r = readFloat(self);
+        CGFloat g = readFloat(self);
+        CGFloat b = readFloat(self);
+        CGFloat a = readFloat(self);
         
-        ccColor3B c = ccc3(r,g,b);
-        value = [NSValue value:&c withObjCType:@encode(ccColor3B)];
+        value = [CCColor colorWithRed:r green:g blue:b alpha:a];
     }
-    else if (type == kCCBPropTypeDegrees)
+    else if (type == kCCBPropTypeDegrees || type == kCCBPropTypeFloat)
     {
         value = [NSNumber numberWithFloat:readFloat(self)];
     }
@@ -830,7 +813,7 @@ static inline float readFloat(CCBReader *self)
     Class class = NSClassFromString(className);
     if (!class)
     {
-        NSLog(@"CCBReader: Could not create class of type %@",className);
+        NSAssert(false,@"CCBReader: Could not create class of type %@",className);
         return NULL;
     }
     CCNode* node = [[class alloc] init];
@@ -897,9 +880,11 @@ static inline float readFloat(CCBReader *self)
         
         CCNode* embeddedNode = ccbFileNode.ccbFile;
         embeddedNode.position = ccbFileNode.position;
+        embeddedNode.positionType = ccbFileNode.positionType;
         //embeddedNode.anchorPoint = ccbFileNode.anchorPoint;
         embeddedNode.rotation = ccbFileNode.rotation;
-        embeddedNode.scale = ccbFileNode.scale;
+        embeddedNode.scaleX = ccbFileNode.scaleX;
+        embeddedNode.scaleY = ccbFileNode.scaleY;
         embeddedNode.name = ccbFileNode.name;
         embeddedNode.visible = YES;
         //embeddedNode.ignoreAnchorPointForPosition = ccbFileNode.ignoreAnchorPointForPosition;
@@ -938,10 +923,11 @@ static inline float readFloat(CCBReader *self)
     BOOL hasPhysicsBody = readBool(self);
     if (hasPhysicsBody)
     {
-        // Read body shape
+#ifdef __CC_PLATFORM_IOS
+			// Read body shape
         int bodyShape = readIntWithSign(self, NO);
         float cornerRadius = readFloat(self);
-        
+#endif
         // Read points
         int numPoints = readIntWithSign(self, NO);
         CGPoint* points = malloc(sizeof(CGPoint)*numPoints);
@@ -963,8 +949,10 @@ static inline float readFloat(CCBReader *self)
         }
         else if (bodyShape == 1)
         {
-            body = [CCPhysicsBody bodyWithCircleOfRadius:cornerRadius andCenter:points[0]];
+            if (numPoints > 0)
+                body = [CCPhysicsBody bodyWithCircleOfRadius:cornerRadius andCenter:points[0]];
         }
+        NSAssert(body, @"Unknown body shape");
         
         BOOL dynamic = readBool(self);
         BOOL affectedByGravity = readBool(self);
@@ -977,15 +965,19 @@ static inline float readFloat(CCBReader *self)
         float friction = readFloat(self);
         float elasticity = readFloat(self);
         
-        //body.affectedByGravity = affectedByGravity;
-        //body.allowsRotation = allowsRotation;
+        if (dynamic)
+        {
+            body.affectedByGravity = affectedByGravity;
+            body.allowsRotation = allowsRotation;
+        }
         
-        //body.density = density;
+        body.density = density;
         body.friction = friction;
         body.elasticity = elasticity;
         
         node.physicsBody = body;
 #endif
+        free(points);
     }
     
     // Read and add children
@@ -995,6 +987,7 @@ static inline float readFloat(CCBReader *self)
         CCNode* child = [self readNodeGraphParent:node];
         [node addChild:child];
     }
+    
     
     return node;
 }
@@ -1158,14 +1151,14 @@ static inline float readFloat(CCBReader *self)
 
 + (void) callDidLoadFromCCBForNodeGraph:(CCNode*)nodeGraph
 {
-    if ([nodeGraph respondsToSelector:@selector(didLoadFromCCB)])
-    {
-        [nodeGraph performSelector:@selector(didLoadFromCCB)];
-    }
-    
     for (CCNode* child in nodeGraph.children)
     {
         [CCBReader callDidLoadFromCCBForNodeGraph:child];
+    }
+    
+    if ([nodeGraph respondsToSelector:@selector(didLoadFromCCB)])
+    {
+        [nodeGraph performSelector:@selector(didLoadFromCCB)];
     }
 }
 
@@ -1179,7 +1172,7 @@ static inline float readFloat(CCBReader *self)
     
     owner = o;
     
-    self.animationManager.rootContainerSize = [[CCDirector sharedDirector] viewSize];
+    self.animationManager.rootContainerSize = [CCDirector sharedDirector].designSize;
     self.animationManager.owner = owner;
     
     NSMutableDictionary* animationManagers = [NSMutableDictionary dictionary];
@@ -1218,12 +1211,12 @@ static inline float readFloat(CCBReader *self)
 
 - (CCNode*) load:(NSString*) file owner:(id)o
 {
-    return [self nodeGraphFromFile:file owner:o parentSize:[[CCDirector sharedDirector] viewSize]];
+    return [self nodeGraphFromFile:file owner:o parentSize:[CCDirector sharedDirector].designSize];
 }
 
 - (CCNode*) load:(NSString*) file
 {
-    return [self nodeGraphFromFile:file owner:NULL parentSize:[[CCDirector sharedDirector] viewSize]];
+    return [self nodeGraphFromFile:file owner:NULL parentSize:[CCDirector sharedDirector].designSize];
 }
 
 +(void) setResourcePath:(NSString *)searchPath
@@ -1240,7 +1233,7 @@ static inline float readFloat(CCBReader *self)
 
 + (CCNode*) load:(NSString*) file owner:(id)owner
 {
-    return [CCBReader load:file owner:owner parentSize:[[CCDirector sharedDirector] viewSize]];
+    return [CCBReader load:file owner:owner parentSize:[CCDirector sharedDirector].designSize];
 }
 
 + (CCNode*) nodeGraphFromData:(NSData*) data owner:(id)owner parentSize:(CGSize)parentSize
@@ -1260,7 +1253,7 @@ static inline float readFloat(CCBReader *self)
 
 + (CCScene*) loadAsScene:(NSString *)file owner:(id)owner
 {
-    return [CCBReader sceneWithNodeGraphFromFile:file owner:owner parentSize:[[CCDirector sharedDirector] viewSize]];
+    return [CCBReader sceneWithNodeGraphFromFile:file owner:owner parentSize:[CCDirector sharedDirector].designSize];
 }
 
 + (CCScene*) sceneWithNodeGraphFromFile:(NSString *)file owner:(id)owner parentSize:(CGSize)parentSize

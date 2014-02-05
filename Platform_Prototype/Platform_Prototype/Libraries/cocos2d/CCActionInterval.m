@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2011 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -163,8 +164,8 @@
 -(id) initOne: (CCActionFiniteTime*) one two: (CCActionFiniteTime*) two
 {
 	NSAssert( one!=nil && two!=nil, @"Sequence: arguments must be non-nil");
-	NSAssert( one!=_actions[0] && one!=_actions[1], @"Sequence: re-init using the same parameters is not supported");
-	NSAssert( two!=_actions[1] && two!=_actions[0], @"Sequence: re-init using the same parameters is not supported");
+	// NSAssert( one!=_actions[0] && one!=_actions[1], @"Sequence: re-init using the same parameters is not supported");
+	// NSAssert( two!=_actions[1] && two!=_actions[0], @"Sequence: re-init using the same parameters is not supported");
 	
 	CCTime d = [one duration] + [two duration];
 	
@@ -553,8 +554,16 @@
 }
 -(void) update: (CCTime) t
 {
-	[_target setRotationalSkewX: _startAngleX + _diffAngleX * t];
-	[_target setRotationalSkewY: _startAngleY + _diffAngleY * t];
+    // added to support overriding setRotation only
+    if ((_startAngleX == _startAngleY) && (_diffAngleX == _diffAngleY))
+    {
+        [_target setRotation:(_startAngleX + (_diffAngleX * t))];
+    }
+    else
+    {
+        [_target setRotationalSkewX: _startAngleX + _diffAngleX * t];
+        [_target setRotationalSkewY: _startAngleY + _diffAngleY * t];
+    }
 }
 @end
 
@@ -587,8 +596,8 @@
 {
 	if( (self=[super initWithDuration: t]) ){
 		_angleX = aX;
-    _angleY = aY;
-  }
+        _angleY = aY;
+    }
 	return self;
 }
 
@@ -608,8 +617,16 @@
 -(void) update: (CCTime) t
 {
 	// XXX: shall I add % 360
-	[_target setRotationalSkewX: (_startAngleX + _angleX * t )];
-	[_target setRotationalSkewY: (_startAngleY + _angleY * t )];
+    // added to support overriding setRotation only
+    if ((_startAngleX == _startAngleY) && (_angleX == _angleY))
+    {
+        [_target setRotation:(_startAngleX + (_angleX * t))];
+    }
+    else
+    {
+        [_target setRotationalSkewX: (_startAngleX + _angleX * t )];
+        [_target setRotationalSkewY: (_startAngleY + _angleY * t )];
+    }
 }
 
 -(CCActionInterval*) reverse
@@ -1057,8 +1074,16 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 
 -(void) update: (CCTime) t
 {
-	[_target setScaleX: (_startScaleX + _deltaX * t ) ];
-	[_target setScaleY: (_startScaleY + _deltaY * t ) ];
+    // added to support overriding setScale only
+    if ((_startScaleX == _startScaleY) && (_endScaleX == _endScaleY))
+    {
+        [_target setScale:(_startScaleX + (_deltaX * t))];
+    }
+    else
+    {
+        [_target setScaleX: (_startScaleX + _deltaX * t ) ];
+        [_target setScaleY: (_startScaleY + _deltaY * t ) ];
+    }
 }
 @end
 
@@ -1139,7 +1164,7 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 @implementation CCActionFadeIn
 -(void) update: (CCTime) t
 {
-	[(id<CCRGBAProtocol>) _target setOpacity: 255 *t];
+	[(CCNode*) _target setOpacity: 1.0 *t];
 }
 
 -(CCActionInterval*) reverse
@@ -1155,7 +1180,7 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 @implementation CCActionFadeOut
 -(void) update: (CCTime) t
 {
-	[(id<CCRGBAProtocol>) _target setOpacity: 255 *(1-t)];
+	[(CCNode*) _target setOpacity: 1.0 *(1-t)];
 }
 
 -(CCActionInterval*) reverse
@@ -1169,12 +1194,12 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 //
 #pragma mark - CCFadeTo
 @implementation CCActionFadeTo
-+(id) actionWithDuration: (CCTime) t opacity: (GLubyte) o
++(id) actionWithDuration: (CCTime) t opacity: (CGFloat) o
 {
 	return [[ self alloc] initWithDuration: t opacity: o];
 }
 
--(id) initWithDuration: (CCTime) t opacity: (GLubyte) o
+-(id) initWithDuration: (CCTime) t opacity: (CGFloat) o
 {
 	if( (self=[super initWithDuration: t] ) )
 		_toOpacity = o;
@@ -1191,12 +1216,12 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 -(void) startWithTarget:(CCNode *)aTarget
 {
 	[super startWithTarget:aTarget];
-	_fromOpacity = [(id<CCRGBAProtocol>)_target opacity];
+	_fromOpacity = [(CCNode*)_target opacity];
 }
 
 -(void) update: (CCTime) t
 {
-	[(id<CCRGBAProtocol>)_target setOpacity:_fromOpacity + ( _toOpacity - _fromOpacity ) * t];
+	[(CCNode*)_target setOpacity:_fromOpacity + ( _toOpacity - _fromOpacity ) * t];
 }
 @end
 
@@ -1205,37 +1230,41 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 //
 #pragma mark - CCTintTo
 @implementation CCActionTintTo
-+(id) actionWithDuration:(CCTime)t red:(GLubyte)r green:(GLubyte)g blue:(GLubyte)b
++(id) actionWithDuration:(CCTime)duration color:(CCColor*)color
 {
-	return [(CCActionTintTo*)[ self alloc] initWithDuration:t red:r green:g blue:b];
+	return [(CCActionTintTo*)[ self alloc] initWithDuration:duration color:color];
 }
 
--(id) initWithDuration: (CCTime) t red:(GLubyte)r green:(GLubyte)g blue:(GLubyte)b
+-(id) initWithDuration:(CCTime)t color:(CCColor*)color
 {
 	if( (self=[super initWithDuration:t] ) )
-		_to = ccc3(r,g,b);
+		_to = color;
 
 	return self;
 }
 
 -(id) copyWithZone: (NSZone*) zone
 {
-	CCAction *copy = [(CCActionTintTo*)[[self class] allocWithZone: zone] initWithDuration:[self duration] red:_to.r green:_to.g blue:_to.b];
+	CCAction *copy = [(CCActionTintTo*)[[self class] allocWithZone: zone] initWithDuration:[self duration] color:_to];
 	return copy;
 }
 
--(void) startWithTarget:(id)aTarget
+-(void) startWithTarget:(CCNode*)aTarget
 {
 	[super startWithTarget:aTarget];
 
-	id<CCRGBAProtocol> tn = (id<CCRGBAProtocol>) _target;
+	CCNode* tn = (CCNode*) _target;
 	_from = [tn color];
 }
 
 -(void) update: (CCTime) t
 {
-	id<CCRGBAProtocol> tn = (id<CCRGBAProtocol>) _target;
-	[tn setColor:ccc3(_from.r + (_to.r - _from.r) * t, _from.g + (_to.g - _from.g) * t, _from.b + (_to.b - _from.b) * t)];
+	CCNode* tn = (CCNode*) _target;
+    
+	ccColor4F fc = _from.ccColor4f;
+	ccColor4F tc = _to.ccColor4f;
+    
+	[tn setColor:[CCColor colorWithRed:fc.r + (tc.r - fc.r) * t green:fc.g + (tc.g - fc.g) * t blue:fc.b + (tc.b - fc.b) * t alpha:1]];
 }
 @end
 
@@ -1244,12 +1273,12 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 //
 #pragma mark - CCTintBy
 @implementation CCActionTintBy
-+(id) actionWithDuration:(CCTime)t red:(GLshort)r green:(GLshort)g blue:(GLshort)b
++(id) actionWithDuration:(CCTime)t red:(CGFloat)r green:(CGFloat)g blue:(CGFloat)b
 {
 	return [(CCActionTintBy*)[ self alloc] initWithDuration:t red:r green:g blue:b];
 }
 
--(id) initWithDuration:(CCTime)t red:(GLshort)r green:(GLshort)g blue:(GLshort)b
+-(id) initWithDuration:(CCTime)t red:(CGFloat)r green:(CGFloat)g blue:(CGFloat)b
 {
 	if( (self=[super initWithDuration: t] ) ) {
 		_deltaR = r;
@@ -1268,17 +1297,18 @@ static inline CGFloat bezierat( float a, float b, float c, float d, CCTime t )
 {
 	[super startWithTarget:aTarget];
 
-	id<CCRGBAProtocol> tn = (id<CCRGBAProtocol>) _target;
-	ccColor3B color = [tn color];
-	_fromR = color.r;
-	_fromG = color.g;
-	_fromB = color.b;
+	CCNode* tn = (CCNode*) _target;
+	CCColor* color = [tn color];
+    
+	_fromR = color.red;
+	_fromG = color.green;
+	_fromB = color.blue;
 }
 
 -(void) update: (CCTime) t
 {
-	id<CCRGBAProtocol> tn = (id<CCRGBAProtocol>) _target;
-	[tn setColor:ccc3( _fromR + _deltaR * t, _fromG + _deltaG * t, _fromB + _deltaB * t)];
+	CCNode* tn = (CCNode*) _target;
+	[tn setColor:[CCColor colorWithRed:_fromR + _deltaR * t green:_fromG + _deltaG * t blue:_fromB + _deltaB * t alpha:1]];
 }
 
 - (CCActionInterval*) reverse

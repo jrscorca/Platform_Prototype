@@ -13,4 +13,6 @@
 
 @property(nonatomic, strong) CCSprite *sprite;
 
+-(id)initWithPosition:(CGPoint)position;
+
 @end

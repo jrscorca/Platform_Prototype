@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2009 Jason Booth
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +36,14 @@
 #import <UIKit/UIKit.h>
 #endif // iPHone
 
+/**
+ *  Image format when saving render textures
+ */
 typedef NS_ENUM(NSInteger, CCRenderTextureImageFormat)
 {
+	/** Image will be saved as JPEG */
 	CCRenderTextureImageFormatJPEG = 0,
+	/** Image will be saved as PNG */
 	CCRenderTextureImageFormatPNG = 1,
 };
 
@@ -50,7 +56,6 @@ typedef NS_ENUM(NSInteger, CCRenderTextureImageFormat)
  the render texture to your scene and treat it like any other CCNode.
  There are also functions for saving the render texture to disk in PNG or JPG format.
 
- @since v0.8.1
  */
 @interface CCRenderTexture : CCNode
 {
@@ -79,7 +84,7 @@ typedef NS_ENUM(NSInteger, CCRenderTextureImageFormat)
 /** Valid flags: GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT. They can be OR'ed. Valid when "autoDraw is YES. */
 @property (nonatomic, readwrite) GLbitfield clearFlags;
 /** Clear color value. Valid only when "autoDraw" is YES. */
-@property (nonatomic, readwrite) ccColor4F clearColor;
+@property (nonatomic, strong) CCColor* clearColor;
 /** Value for clearDepth. Valid only when autoDraw is YES. */
 @property (nonatomic, readwrite) GLclampf clearDepth;
 /** Value for clear Stencil. Valid only when autoDraw is YES */

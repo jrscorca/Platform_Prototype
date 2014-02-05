@@ -29,10 +29,6 @@
 #import "CCPhysics+ObjectiveChipmunk.h"
 
 
-// TODO temporary
-static inline void NYI(){@throw @"Not Yet Implemented";}
-
-
 #define FOREACH_SHAPE(__body__, __shapeVar__) for(CCPhysicsShape *__shapeVar__ = __body__->_shapeList; __shapeVar__; __shapeVar__ = __shapeVar__.next)
 
 
@@ -95,14 +91,26 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 	return [[self alloc] initWithShapeList:shape];
 }
 
++(CCPhysicsBody *)bodyWithPolylineFromRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius
+{
+	CGPoint points[] = {
+		{CGRectGetMinX(rect), CGRectGetMinY(rect)},
+		{CGRectGetMaxX(rect), CGRectGetMinY(rect)},
+		{CGRectGetMaxX(rect), CGRectGetMaxY(rect)},
+		{CGRectGetMinX(rect), CGRectGetMaxY(rect)},
+	};
+	
+	return [self bodyWithPolylineFromPoints:points count:4 cornerRadius:cornerRadius looped:YES];
+}
+
 +(CCPhysicsBody *)bodyWithPolylineFromPoints:(CGPoint *)points count:(NSUInteger)count cornerRadius:(CGFloat)cornerRadius looped:(bool)looped;
 {
-	NSAssert(looped || count > 1, @"Non-looped polyline bodies must have at least two points.");
-	NSAssert(!looped || count > 2, @"Looped polyline bodies must have at least three points.");
+	NSAssert(looped || count >= 2, @"Non-looped polyline bodies must have at least two points.");
+	NSAssert(!looped || count >= 3, @"Looped polyline bodies must have at least three points.");
 	
 	CCPhysicsShape *shapes = nil;
 	
-	int limit = (looped ? count : count - 1);
+	NSUInteger limit = (looped ? count : count - 1);
 	for(int i=0; i<limit; i++){
 		CCPhysicsShape *shape = [CCPhysicsShape pillShapeFrom:points[i] to:points[(i + 1)%count] cornerRadius:cornerRadius];
 		// TODO Broken. Values may be wrong after applying a transform in onEnter.
@@ -112,13 +120,16 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 		shapes = shape;
 	}
 	
-	return [[self alloc] initWithShapeList:shapes];
+	CCPhysicsBody *body = [[self alloc] initWithShapeList:shapes];
+	body.type = CCPhysicsBodyTypeStatic;
+	
+	return body;
 }
 
 +(CCPhysicsBody *)bodyWithShapes:(NSArray *)shapes
 {
 	CCPhysicsShape *shapeList = nil;
-	for(int i=0, count=shapes.count; i<count; i++){
+	for(NSUInteger i=0, count=shapes.count; i<count; i++){
 		CCPhysicsShape *shape = shapes[i];
 		shape.next = shapeList;
 		shapeList = shape;
@@ -143,24 +154,24 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 	_shapeList.mass = mass;
 }
 
-//-(CGFloat)density
-//{
-//	return self.mass/self.area;
-//}
-//
-//-(void)setDensity:(CGFloat)density
-//{
-//	NSAssert(_shapeList.next == nil, @"Cannot set the density of a multi-shape body directly. Set the individual shape densities instead.");
-//	_shapeList.density = density;
-//}
-//
-//-(CGFloat)area
-//{
-//	CGFloat sum = 0.0;
-//	FOREACH_SHAPE(self, shape) sum += shape.area;
-//	
-//	return sum;
-//}
+-(CGFloat)density
+{
+	return self.mass/self.area;
+}
+
+-(void)setDensity:(CGFloat)density
+{
+	NSAssert(_shapeList.next == nil, @"Cannot set the density of a multi-shape body directly. Set the individual shape densities instead.");
+	_shapeList.density = density;
+}
+
+-(CGFloat)area
+{
+	CGFloat sum = 0.0;
+	FOREACH_SHAPE(self, shape) sum += shape.area;
+	
+	return sum;
+}
 
 -(CGFloat)friction {return _shapeList.friction;}
 -(void)setFriction:(CGFloat)friction {FOREACH_SHAPE(self, shape) shape.friction = friction;}
@@ -227,11 +238,11 @@ NotAffectedByGravity
 	}
 }
 
-static ccPhysicsBodyType ToCocosBodyType[] = {CCPhysicsBodyTypeDynamic, CCPhysicsBodyTypeKinematic, CCPhysicsBodyTypeStatic};
-static cpBodyType ToChipmunkBodyType[] = {CP_BODY_TYPE_DYNAMIC, CP_BODY_TYPE_KINEMATIC, CP_BODY_TYPE_STATIC};
+static CCPhysicsBodyType ToCocosBodyType[] = {CCPhysicsBodyTypeDynamic, CCPhysicsBodyTypeStatic, CCPhysicsBodyTypeStatic};
+static cpBodyType ToChipmunkBodyType[] = {CP_BODY_TYPE_DYNAMIC, /*CP_BODY_TYPE_KINEMATIC,*/ CP_BODY_TYPE_STATIC};
 
--(ccPhysicsBodyType)type {return ToCocosBodyType[_body.type];}
--(void)setType:(ccPhysicsBodyType)type {_body.type = ToChipmunkBodyType[type];}
+-(CCPhysicsBodyType)type {return ToCocosBodyType[_body.type];}
+-(void)setType:(CCPhysicsBodyType)type {_body.type = ToChipmunkBodyType[type];}
 
 //MARK: Collision and Contact:
 
@@ -322,10 +333,25 @@ static cpBodyType ToChipmunkBodyType[] = {CP_BODY_TYPE_DYNAMIC, CP_BODY_TYPE_KIN
 -(void)setNode:(CCNode *)node {_node = node;}
 
 -(cpVect)absolutePosition {return _body.position;}
--(void)setAbsolutePosition:(cpVect)absolutePosition {_body.position = absolutePosition;}
+-(void)setAbsolutePosition:(cpVect)absolutePosition
+{
+	_body.position = absolutePosition;
+	
+	if(_body.type == CP_BODY_TYPE_STATIC){
+		// Need to force Chipmunk to update the spatial indexes for a static body.
+		[_body.space reindexShapesForBody:_body];
+	}
+}
 
 -(cpFloat)absoluteRadians {return _body.angle;}
--(void)setAbsoluteRadians:(cpFloat)absoluteRadians {_body.angle = absoluteRadians;}
+-(void)setAbsoluteRadians:(cpFloat)absoluteRadians {
+	_body.angle = absoluteRadians;
+	
+	if(_body.type == CP_BODY_TYPE_STATIC){
+		// Need to force Chipmunk to update the spatial indexes for a static body.
+		[_body.space reindexShapesForBody:_body];
+	}
+}
 
 -(cpTransform)absoluteTransform {return _body.transform;}
 

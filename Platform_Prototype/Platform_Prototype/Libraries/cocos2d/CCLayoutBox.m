@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2013 Apportable Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +26,7 @@
 #import "CCLayoutBox.h"
 #import "ccMacros.h"
 #import "CGPointExtension.h"
+#import "CCNode_Private.h"
 
 @implementation CCLayoutBox
 
@@ -66,7 +68,7 @@ static float roundUpToEven(float f)
         width -= _spacing;
         if (width < 0) width = 0;
         
-        self.contentSizeType = CCContentSizeTypePoints;
+        self.contentSizeType = CCSizeTypePoints;
         self.contentSize = CGSizeMake(roundUpToEven(width), roundUpToEven(maxHeight));
     }
     else
@@ -100,7 +102,7 @@ static float roundUpToEven(float f)
         height -= _spacing;
         if (height < 0) height = 0;
         
-        self.contentSizeType = CCContentSizeTypePoints;
+        self.contentSizeType = CCSizeTypePoints;
         self.contentSize = CGSizeMake(roundUpToEven(maxWidth), roundUpToEven(height));
     }
 }
@@ -108,6 +110,18 @@ static float roundUpToEven(float f)
 - (void) setSpacing:(float)spacing
 {
     _spacing = spacing;
+    [self needsLayout];
+}
+
+-(void) detachChild:(CCNode *)child cleanup:(BOOL)doCleanup
+{
+    [super detachChild:child cleanup:doCleanup];
+    [self needsLayout];
+}
+
+-(void)setDirection:(CCLayoutBoxDirection)direction
+{
+    _direction = direction;
     [self needsLayout];
 }
 

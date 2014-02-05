@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>frames</key>
+	<dict>
+		<key>Mario_Idle_1</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {57, 102}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{57, 102}</string>
+			<key>spriteSourceSize</key>
+			<string>{57, 102}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 228}, {102, 57}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Idle_2</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {57, 102}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{57, 102}</string>
+			<key>spriteSourceSize</key>
+			<string>{57, 102}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 292}, {102, 57}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Idle_3</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {57, 102}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{57, 102}</string>
+			<key>spriteSourceSize</key>
+			<string>{57, 102}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 360}, {102, 57}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Idle_4</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {57, 102}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{57, 102}</string>
+			<key>spriteSourceSize</key>
+			<string>{57, 102}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 424}, {102, 57}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_1</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{3, 0}, {60, 96}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{60, 96}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 488}, {96, 60}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_2</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {66, 93}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 1.5}</string>
+			<key>spriteSize</key>
+			<string>{66, 93}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 8}, {93, 66}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_3</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{3, 0}, {60, 96}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{60, 96}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 556}, {96, 60}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_4</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{6, 0}, {51, 96}}</string>
+			<key>spriteOffset</key>
+			<string>{-1.5, -0}</string>
+			<key>spriteSize</key>
+			<string>{51, 96}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 624}, {96, 51}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_5</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {63, 96}}</string>
+			<key>spriteOffset</key>
+			<string>{-1.5, -0}</string>
+			<key>spriteSize</key>
+			<string>{63, 96}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 156}, {96, 63}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+		<key>Mario_Run_6</key>
+		<dict>
+			<key>aliases</key>
+			<array/>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {66, 93}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 1.5}</string>
+			<key>spriteSize</key>
+			<string>{66, 93}</string>
+			<key>spriteSourceSize</key>
+			<string>{66, 96}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{8, 84}, {93, 66}}</string>
+			<key>textureRotated</key>
+			<true/>
+		</dict>
+	</dict>
+	<key>metadata</key>
+	<dict>
+		<key>GeneratedWith</key>
+		<string>SpriteHelper</string>
+		<key>format</key>
+		<integer>3</integer>
+		<key>textureFileName</key>
+		<string>Mario_Mario-ipadhd.png</string>
+	</dict>
+</dict>
+</plist>

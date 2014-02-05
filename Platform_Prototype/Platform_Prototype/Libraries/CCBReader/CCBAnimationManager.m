@@ -33,6 +33,7 @@
 
 #import "CCDirector_Private.h"
 #import "CCBReader_Private.h"
+#import "CCActionManager.h"
 
 static NSInteger ccbAnimationManagerID = 0;
 
@@ -160,10 +161,8 @@ static NSInteger ccbAnimationManagerID = 0;
     }
     else if ([name isEqualToString:@"color"])
     {
-        ccColor3B c;
-        [kf1.value getValue:&c];
-        
-        return [CCActionTintTo actionWithDuration:duration red:c.r green:c.g blue:c.b];
+        CCColor* color = kf1.value;
+        return [CCActionTintTo actionWithDuration:duration color:color];
     }
     else if ([name isEqualToString:@"visible"])
     {
@@ -176,7 +175,7 @@ static NSInteger ccbAnimationManagerID = 0;
             return [CCActionSequence actionOne:[CCActionDelay actionWithDuration:duration] two:[CCActionHide action]];
         }
     }
-    else if ([name isEqualToString:@"displayFrame"])
+    else if ([name isEqualToString:@"spriteFrame"])
     {
         return [CCActionSequence actionOne:[CCActionDelay actionWithDuration:duration] two:[CCBSetSpriteFrame actionWithSpriteFrame:kf1.value]];
     }

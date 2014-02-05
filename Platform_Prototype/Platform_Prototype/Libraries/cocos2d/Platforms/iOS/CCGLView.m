@@ -140,13 +140,15 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 		_multiSampling = sampling;
 		_requestedSamples = nSamples;
 		_preserveBackbuffer = retained;
+		
+		// Default to "retina" being enabled.
+		self.contentScaleFactor = [UIScreen mainScreen].scale;
 
 		if( ! [self setupSurfaceWithSharegroup:sharegroup] ) {
 			return nil;
 		}
         
         /** Multiple touch default enabled
-         @since v3.0
          */
         self.multipleTouchEnabled = YES;
 
@@ -327,28 +329,28 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 #pragma mark CCGLView - Touch Delegate
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     // dispatch touch to responder manager
-    [ [ CCDirector sharedDirector ].responderManager touchesBegan:touches withEvent:event ];
+    [[CCDirector sharedDirector].responderManager touchesBegan:touches withEvent:event];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
     // dispatch touch to responder manager
-    [ [ CCDirector sharedDirector ].responderManager touchesMoved:touches withEvent:event ];
+    [[CCDirector sharedDirector].responderManager touchesMoved:touches withEvent:event];
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
     // dispatch touch to responder manager
-    [ [ CCDirector sharedDirector ].responderManager touchesEnded:touches withEvent:event ];
+    [[CCDirector sharedDirector].responderManager touchesEnded:touches withEvent:event];
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
     // dispatch touch to responder manager
-    [ [ CCDirector sharedDirector ].responderManager touchesCancelled:touches withEvent:event ];
+    [[CCDirector sharedDirector].responderManager touchesCancelled:touches withEvent:event];
 }
  
 @end

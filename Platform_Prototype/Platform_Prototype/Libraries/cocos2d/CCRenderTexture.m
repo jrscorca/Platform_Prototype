@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2009 Jason Booth
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +49,6 @@
 
 @synthesize sprite=_sprite;
 @synthesize autoDraw=_autoDraw;
-@synthesize clearColor=_clearColor;
 @synthesize clearDepth=_clearDepth;
 @synthesize clearStencil=_clearStencil;
 @synthesize clearFlags=_clearFlags;
@@ -91,9 +91,9 @@
 		if( [director runningThread] != [NSThread currentThread] )
 			CCLOGWARN(@"cocos2d: WARNING. CCRenderTexture is running on its own thread. Make sure that an OpenGL context is being used on this thread!");
 
-		
-		w *= CC_CONTENT_SCALE_FACTOR();
-		h *= CC_CONTENT_SCALE_FACTOR();
+		CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+		w *= scale;
+		h *= scale;
 
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
 
@@ -113,7 +113,7 @@
 		memset(data, 0, (int)(powW * powH * 4));
 		_pixelFormat=format;
 
-		_texture = [[CCTexture alloc] initWithData:data pixelFormat:_pixelFormat pixelsWide:powW pixelsHigh:powH contentSize:CGSizeMake(w, h)];
+		_texture = [[CCTexture alloc] initWithData:data pixelFormat:_pixelFormat pixelsWide:powW pixelsHigh:powH contentSizeInPixels:CGSizeMake(w, h) contentScale:[CCDirector sharedDirector].contentScaleFactor];
 		free( data );
 
 		GLint oldRBO;
@@ -466,8 +466,8 @@
 	}
 	
 #if __CC_PLATFORM_IOS
-	
-	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:CC_CONTENT_SCALE_FACTOR() orientation:UIImageOrientationUp];
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
 	NSData *imageData = nil;
     
 	if( format == CCRenderTextureImageFormatPNG )
@@ -520,13 +520,24 @@
 {
 	CGImageRef imageRef = [self newCGImage];
 	
-	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:CC_CONTENT_SCALE_FACTOR() orientation:UIImageOrientationUp];
+	CGFloat scale = [CCDirector sharedDirector].contentScaleFactor;
+	UIImage* image	= [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
     
 	CGImageRelease( imageRef );
     
 	return image;
 }
 #endif // __CC_PLATFORM_IOS
+
+- (CCColor*) clearColor
+{
+    return [CCColor colorWithCcColor4f:_clearColor];
+}
+
+- (void) setClearColor:(CCColor *)clearColor
+{
+    _clearColor = clearColor.ccColor4f;
+}
 
 #pragma RenderTexture - Override
 

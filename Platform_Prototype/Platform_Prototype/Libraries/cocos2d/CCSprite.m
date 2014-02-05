@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,6 @@
 #import "CCAnimation.h"
 #import "CCAnimationCache.h"
 #import "CCTextureCache.h"
-#import "CCDrawingPrimitives.h"
 #import "CCShaderCache.h"
 #import "ccGLStateCache.h"
 #import "CCGLProgram.h"
@@ -118,6 +118,11 @@
 +(id)spriteWithCGImage:(CGImageRef)image key:(NSString*)key
 {
 	return [[self alloc] initWithCGImage:image key:key];
+}
+
++(id) emptySprite
+{
+    return [[self alloc] init];
 }
 
 -(id) init
@@ -298,7 +303,7 @@
 {
 	_rectRotated = rotated;
 
-    self.contentSizeType = CCContentSizeTypePoints;
+    self.contentSizeType = CCSizeTypePoints;
 	[self setContentSize:untrimmedSize];
 	[self setVertexRect:rect];
 	[self setTextureCoords:rect];
@@ -347,12 +352,13 @@
 
 -(void) setTextureCoords:(CGRect)rect
 {
-	rect = CC_RECT_POINTS_TO_PIXELS(rect);
-
 	CCTexture *tex	= (_batchNode) ? [_textureAtlas texture] : _texture;
 	if(!tex)
 		return;
-
+	
+	CGFloat scale = tex.contentScale;
+	rect = CC_RECT_SCALE(rect, scale);
+	
 	float atlasWidth = (float)tex.pixelWidth;
 	float atlasHeight = (float)tex.pixelHeight;
 
@@ -571,7 +577,11 @@
 
 	if( _batchNode ) {
 		NSAssert( [child isKindOfClass:[CCSprite class]], @"CCSprite only supports CCSprites as children when using CCSpriteBatchNode");
-		NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCSprite is not using the same texture id");
+        
+		if(child.texture) {
+            NSAssert( (child.texture.name == _textureAtlas.texture.name), @"CCSprite is not using the same texture id");
+        }
+
 
 		//put it in descendants array of batch node
 		[_batchNode appendChild:child];
@@ -781,15 +791,14 @@
 #pragma mark CCSprite - RGBA protocol
 -(void) updateColor
 {
-	ccColor4B color4 = {_displayedColor.r, _displayedColor.g, _displayedColor.b, _displayedOpacity};
-
+	ccColor4B color4 = ccc4BFromccc4F(_displayColor);
 	
 	// special opacity for premultiplied textures
 	if ( _opacityModifyRGB ) {
-		color4.r *= _displayedOpacity/255.0f;
-		color4.g *= _displayedOpacity/255.0f;
-		color4.b *= _displayedOpacity/255.0f;
-    }
+		color4.r *= _displayColor.a;
+		color4.g *= _displayColor.a;
+		color4.b *= _displayColor.a;
+	}
 
 	_quad.bl.colors = color4;
 	_quad.br.colors = color4;
@@ -809,21 +818,27 @@
 	// do nothing
 }
 
--(void) setColor:(ccColor3B)color3
+-(void) setColor:(CCColor*)color
 {
-    [super setColor:color3];
+	[super setColor:color];
 	[self updateColor];
 }
 
--(void)updateDisplayedColor:(ccColor3B)parentColor
+- (void) setColorRGBA:(CCColor*)color
 {
-    [super updateDisplayedColor:parentColor];
-    [self updateColor];
+	[super setColorRGBA:color];
+	[self updateColor];
 }
 
--(void) setOpacity:(GLubyte)opacity
+-(void)updateDisplayedColor:(ccColor4F) parentColor
 {
-    [super setOpacity:opacity];
+	[super updateDisplayedColor:parentColor];
+	[self updateColor];
+}
+
+-(void) setOpacity:(CGFloat)opacity
+{
+	[super setOpacity:opacity];
 	[self updateColor];
 }
 
@@ -840,7 +855,7 @@
 	return _opacityModifyRGB;
 }
 
--(void)updateDisplayedOpacity:(GLubyte)parentOpacity
+-(void)updateDisplayedOpacity:(CGFloat)parentOpacity
 {
     [super updateDisplayedOpacity:parentOpacity];
     [self updateColor];
@@ -908,8 +923,8 @@
 	NSAssert( !_batchNode || texture.name == _batchNode.texture.name , @"CCSprite: Batched sprites should use the same texture as the batchnode");	
 
 	// accept texture==nil as argument
-	NSAssert( !texture || [texture isKindOfClass:[CCTexture class]], @"setTexture expects a CCTexture2D. Invalid argument");
-
+    NSAssert( !texture || [texture isKindOfClass:[CCTexture class]], @"setTexture expects a CCTexture2D. Invalid argument");
+    
 	if( ! _batchNode && _texture != texture ) {
 		_texture = texture;
 

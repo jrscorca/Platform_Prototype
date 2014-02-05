@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +65,7 @@
 	NSPoint point = [[self view] convertPoint:[event locationInWindow] fromView:nil];
 	CGPoint p = NSPointToCGPoint(point);
 
-	return  [(CCDirectorMac*)self convertToLogicalCoordinates:p];
+	return  [(CCDirectorMac*)self convertToGL:p];
 }
 
 @end
@@ -75,7 +76,7 @@
 @implementation CCDirectorMac
 
 @synthesize isFullScreen = _isFullScreen;
-@synthesize originalWinSize = _originalWinSize;
+@synthesize originalWinSizeInPoints = _originalWinSizeInPoints;
 
 -(id) init
 {
@@ -83,12 +84,10 @@
 		_isFullScreen = NO;
 		_resizeMode = kCCDirectorResize_AutoScale;
 
-        _originalWinSize = CGSizeZero;
+		_originalWinSizeInPoints = CGSizeZero;
 		_fullScreenWindow = nil;
 		_windowGLView = nil;
 		_winOffset = CGPointZero;
-
-        self.positionScaleFactor = 1;
 	}
 
 	return self;
@@ -199,9 +198,9 @@
 		[super setView:view];
 
 		// cache the NSWindow and NSOpenGLView created from the NIB
-		if( !_isFullScreen && CGSizeEqualToSize(_originalWinSize, CGSizeZero))
+		if( !_isFullScreen && CGSizeEqualToSize(_originalWinSizeInPoints, CGSizeZero))
 		{
-			_originalWinSize = _winSizeInPixels;
+			_originalWinSizeInPoints = _winSizeInPoints;
 		}
 	}
 }
@@ -229,9 +228,9 @@
 	float heightAspect = _winSizeInPixels.height;
 
 
-	if( _resizeMode == kCCDirectorResize_AutoScale && ! CGSizeEqualToSize(_originalWinSize, CGSizeZero ) ) {
+	if( _resizeMode == kCCDirectorResize_AutoScale && ! CGSizeEqualToSize(_originalWinSizeInPoints, CGSizeZero ) ) {
 		
-		float aspect = _originalWinSize.width / _originalWinSize.height;
+		float aspect = _originalWinSizeInPoints.width / _originalWinSizeInPoints.height;
 		widthAspect = _winSizeInPixels.width;
 		heightAspect = _winSizeInPixels.width / aspect;
 		
@@ -251,10 +250,10 @@
 
 -(void) setProjection:(CCDirectorProjection)projection
 {
-	CGSize size = _winSizeInPixels;
-    if( _resizeMode == kCCDirectorResize_AutoScale && ! CGSizeEqualToSize(_originalWinSize, CGSizeZero ) ) {
-		size = _originalWinSize;
-    }
+	CGSize size = _winSizeInPoints;
+	if( _resizeMode == kCCDirectorResize_AutoScale && ! CGSizeEqualToSize(_originalWinSizeInPoints, CGSizeZero ) ) {
+		size = _originalWinSizeInPoints;
+	}
 
 	[self setViewport];
 
@@ -295,7 +294,7 @@
 			kmGLLoadIdentity();
 			kmVec3 eye, center, up;
 
-			float eyeZ = size.height * zeye / _winSizeInPixels.height;
+			float eyeZ = size.height * zeye / size.height;
 
 			kmVec3Fill( &eye, size.width/2, size.height/2, eyeZ );
 			kmVec3Fill( &center, size.width/2, size.height/2, 0 );
@@ -318,6 +317,7 @@
 	_projection = projection;
 
 	ccSetProjectionMatrixDirty();
+	[self createStatsLabel];
 }
 
 
@@ -326,70 +326,75 @@
 -(CGSize) winSize
 {
 	if( _resizeMode == kCCDirectorResize_AutoScale )
-		return _originalWinSize;
+		return _originalWinSizeInPoints;
 
-	return _winSizeInPixels;
+	return _winSizeInPoints;
 }
 
 -(CGSize) winSizeInPixels
 {
-	return [self winSize];
+	return _winSizeInPixels;
 }
 
-- (CGPoint) convertToLogicalCoordinates:(CGPoint)coords
+-(CGFloat)flipY
 {
-	CGPoint ret;
-
-	if( _resizeMode == kCCDirectorResize_NoScale )
-		ret = coords;
-
-	else {
-
-		float x_diff = _originalWinSize.width / (_winSizeInPixels.width - _winOffset.x * 2);
-		float y_diff = _originalWinSize.height / (_winSizeInPixels.height - _winOffset.y * 2);
-
-		float adjust_x = (_winSizeInPixels.width * x_diff - _originalWinSize.width ) / 2;
-		float adjust_y = (_winSizeInPixels.height * y_diff - _originalWinSize.height ) / 2;
-
-		ret = CGPointMake( (x_diff * coords.x) - adjust_x, ( y_diff * coords.y ) - adjust_y );
-	}
-
-	return ret;
+	return 1.0;
 }
 
--(CGPoint)convertToGL:(CGPoint)uiPoint
-{
-    NSPoint point = [[self view] convertPoint:uiPoint fromView:nil];
-	CGPoint p = NSPointToCGPoint(point);
-    
-	return  [(CCDirectorMac*)self convertToLogicalCoordinates:p];
-}
-
-- (CGPoint) unConvertFromLogicalCoordinates:(CGPoint)coords
-{
-	CGPoint ret;
-	
-	if( _resizeMode == kCCDirectorResize_NoScale )
-		ret = coords;
-	
-	else {
-		
-		float x_diff = _originalWinSize.width / (_winSizeInPixels.width - _winOffset.x * 2);
-		float y_diff = _originalWinSize.height / (_winSizeInPixels.height - _winOffset.y * 2);
-		
-		float adjust_x = (_winSizeInPixels.width * x_diff - _originalWinSize.width ) / 2;
-		float adjust_y = (_winSizeInPixels.height * y_diff - _originalWinSize.height ) / 2;
-		
-		ret = CGPointMake(  (coords.x+ adjust_x)/x_diff, (coords.y +adjust_y)/y_diff );
-	}
-	
-	return ret;
-}
-
-- (CGPoint) convertToUI:(CGPoint)glPoint
-{
-	return [self unConvertFromLogicalCoordinates:glPoint];
-}
+//- (CGPoint) convertToLogicalCoordinates:(CGPoint)coords
+//{
+//	CGPoint ret;
+//
+//	if( _resizeMode == kCCDirectorResize_NoScale )
+//		ret = coords;
+//
+//	else {
+//
+//		float x_diff = _originalWinSizeInPoints.width / (_winSizeInPixels.width - _winOffset.x * 2);
+//		float y_diff = _originalWinSizeInPoints.height / (_winSizeInPixels.height - _winOffset.y * 2);
+//
+//		float adjust_x = (_winSizeInPixels.width * x_diff - _originalWinSizeInPoints.width ) / 2;
+//		float adjust_y = (_winSizeInPixels.height * y_diff - _originalWinSizeInPoints.height ) / 2;
+//
+//		ret = CGPointMake( (x_diff * coords.x) - adjust_x, ( y_diff * coords.y ) - adjust_y );
+//	}
+//
+//	return ret;
+//}
+//
+//-(CGPoint)convertToGL:(CGPoint)uiPoint
+//{
+//    NSPoint point = [[self view] convertPoint:uiPoint fromView:nil];
+//	CGPoint p = NSPointToCGPoint(point);
+//    
+//	return  [(CCDirectorMac*)self convertToLogicalCoordinates:p];
+//}
+//
+//- (CGPoint) unConvertFromLogicalCoordinates:(CGPoint)coords
+//{
+//	CGPoint ret;
+//	
+//	if( _resizeMode == kCCDirectorResize_NoScale )
+//		ret = coords;
+//	
+//	else {
+//		
+//		float x_diff = _originalWinSizeInPoints.width / (_winSizeInPixels.width - _winOffset.x * 2);
+//		float y_diff = _originalWinSizeInPoints.height / (_winSizeInPixels.height - _winOffset.y * 2);
+//		
+//		float adjust_x = (_winSizeInPixels.width * x_diff - _originalWinSizeInPoints.width ) / 2;
+//		float adjust_y = (_winSizeInPixels.height * y_diff - _originalWinSizeInPoints.height ) / 2;
+//		
+//		ret = CGPointMake(  (coords.x+ adjust_x)/x_diff, (coords.y +adjust_y)/y_diff );
+//	}
+//	
+//	return ret;
+//}
+//
+//- (CGPoint) convertToUI:(CGPoint)glPoint
+//{
+//	return [self unConvertFromLogicalCoordinates:glPoint];
+//}
 
 @end
 

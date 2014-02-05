@@ -23,7 +23,7 @@
     CCButton *buttonLeft;
     CCButton *buttonRight;
     Character *character1;
-    Platform *platform;
+    Platform *platform, *groundPlatform;
     
     int platformCount;
 }

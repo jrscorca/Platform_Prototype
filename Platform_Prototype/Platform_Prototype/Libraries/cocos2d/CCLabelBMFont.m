@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,6 @@
 #import "ccMacros.h"
 #import "CCLabelBMFont.h"
 #import "CCSprite.h"
-#import "CCDrawingPrimitives.h"
 #import "CCConfiguration.h"
 #import "CCTextureCache.h"
 #import "Support/CCFileUtils.h"
@@ -136,7 +136,8 @@ void FNTConfigRemoveCache( void )
 
 -(void) purgeFontDefDictionary
 {	
-	tCCFontDefHashElement *current, *tmp;
+	tCCFontDefHashElement *current;
+    tCCFontDefHashElement *tmp;
 	
 	HASH_ITER(hh, _fontDefDictionary, current, tmp) {
 		HASH_DEL(_fontDefDictionary, current);
@@ -436,7 +437,6 @@ void FNTConfigRemoveCache( void )
 @implementation CCLabelBMFont
 
 @synthesize alignment = _alignment;
-@synthesize cascadeColorEnabled = _cascadeColorEnabled, cascadeOpacityEnabled = _cascadeOpacityEnabled;
 
 #pragma mark LabelBMFont - Purge Cache
 +(void) purgeCachedData
@@ -485,31 +485,35 @@ void FNTConfigRemoveCache( void )
 	NSAssert( (theString && fntFile) || (theString==nil && fntFile==nil), @"Invalid params for CCLabelBMFont");
 	
 	CCTexture *texture = nil;
+    CCBMFontConfiguration *newConf = nil;
     
 	if( fntFile ) {
-		CCBMFontConfiguration *newConf = FNTConfigLoadFile(fntFile);
+		newConf = FNTConfigLoadFile(fntFile);
 		if(!newConf) {
 			CCLOGWARN(@"cocos2d: WARNING. CCLabelBMFont: Impossible to create font. Please check file: '%@'", fntFile );
 			return nil;
 		}
         
-		_configuration = newConf;
-		_fntFile = [fntFile copy];
-        
-		texture = [[CCTextureCache sharedTextureCache] addImage:_configuration.atlasName];
+		texture = [[CCTextureCache sharedTextureCache] addImage:newConf.atlasName];
         
 	} else
 		texture = [[CCTexture alloc] init];
     
     
 	if ( (self=[super initWithTexture:texture capacity:[theString length]]) ) {
-        _width = width;
-        _alignment = alignment;
+        
+        if (fntFile)
+        {
+            _configuration = newConf;
+            _fntFile = [fntFile copy];
+        }
+        
+		_width = width;
+		_alignment = alignment;
 
-		_displayedOpacity = _realOpacity = 255;
-		_displayedColor = _realColor = ccWHITE;
-        _cascadeOpacityEnabled = YES;
-        _cascadeColorEnabled = YES;
+		_displayColor = _color = [CCColor whiteColor].ccColor4f;
+		_cascadeOpacityEnabled = YES;
+		_cascadeColorEnabled = YES;
 
 		_contentSize = CGSizeZero;
 		
@@ -549,7 +553,7 @@ void FNTConfigRemoveCache( void )
             int justSkipped = 0;
             int idx = j+skip+justSkipped;
             NSString* idxStr = [NSString stringWithFormat:@"%d", idx];
-            while(!(characterSprite = (CCSprite *)[self getChildByName:idxStr]))
+            while(!(characterSprite = (CCSprite *)[self getChildByName:idxStr recursively:NO]))
                 justSkipped++;
             skip += justSkipped;
 			
@@ -674,7 +678,7 @@ void FNTConfigRemoveCache( void )
                     if (index < 0)
                         continue;
                     NSString* indexStr1 = [NSString stringWithFormat:@"%d",(int)index];
-                    CCSprite *characterSprite = (CCSprite *)[self getChildByName:indexStr1];
+                    CCSprite *characterSprite = (CCSprite *)[self getChildByName:indexStr1 recursively:NO];
                     characterSprite.position = ccpAdd(characterSprite.position, ccp(shift, 0));
                 }
             }
@@ -732,8 +736,10 @@ void FNTConfigRemoveCache( void )
 	totalHeight = _configuration->_commonHeight * quantityOfLines;
 	nextFontPositionY = -(_configuration->_commonHeight - _configuration->_commonHeight*quantityOfLines);
     CGRect rect;
-    ccBMFontDef fontDef;
-
+    ccBMFontDef fontDef = (ccBMFontDef){};
+	
+	CGFloat contentScale = 1.0/self.texture.contentScale;
+	
 	for(NSUInteger i = 0; i<stringLen; i++) {
 		unichar c = [_string characterAtIndex:i];
         
@@ -759,11 +765,10 @@ void FNTConfigRemoveCache( void )
 			CCLOGWARN(@"cocos2d: CCLabelBMFont: characer not found %c", c);
 			continue;
 		}
-        
-        fontDef = element->fontDef;
-        
-        rect = fontDef.rect;
-		rect = CC_RECT_PIXELS_TO_POINTS(rect);
+		
+		fontDef = element->fontDef;
+		
+		rect = CC_RECT_SCALE(fontDef.rect, contentScale);
 		
 		rect.origin.x += _imageOffset.x;
 		rect.origin.y += _imageOffset.y;
@@ -772,7 +777,7 @@ void FNTConfigRemoveCache( void )
 
 		BOOL hasSprite = YES;
         NSString* iStr = [NSString stringWithFormat:@"%d",(int)i];
-		fontChar = (CCSprite*) [self getChildByName:iStr];
+		fontChar = (CCSprite*) [self getChildByName:iStr recursively:NO];
 		if( fontChar )
 		{
 			// Reusing previous Sprite
@@ -799,8 +804,8 @@ void FNTConfigRemoveCache( void )
 			[fontChar setOpacityModifyRGB:_opacityModifyRGB];
 
 			// Color MUST be set before opacity, since opacity might change color if OpacityModifyRGB is on
-			[fontChar updateDisplayedColor:_displayedColor];
-			[fontChar updateDisplayedOpacity:_displayedOpacity];
+			[fontChar updateDisplayedColor:_displayColor];
+			[fontChar updateDisplayedOpacity:_displayColor.a];
 		}
 
 		// updating previous sprite
@@ -810,8 +815,8 @@ void FNTConfigRemoveCache( void )
 		// See issue 1343. cast( signed short + unsigned integer ) == unsigned integer (sign is lost!)
 		NSInteger yOffset = _configuration->_commonHeight - fontDef.yOffset;
 		CGPoint fontPos = ccp( (CGFloat)nextFontPositionX + fontDef.xOffset + fontDef.rect.size.width*0.5f + kerningAmount,
-							  (CGFloat)nextFontPositionY + yOffset - rect.size.height*0.5f * CC_CONTENT_SCALE_FACTOR() );
-        fontChar.position = CC_POINT_PIXELS_TO_POINTS(fontPos);
+							  (CGFloat)nextFontPositionY + yOffset - rect.size.height*0.5f * __ccContentScaleFactor );
+		fontChar.position = ccpMult(fontPos, contentScale);
 		
 		// update kerning
 		nextFontPositionX += fontDef.xAdvance + kerningAmount;
@@ -835,7 +840,7 @@ void FNTConfigRemoveCache( void )
     }
     tmpSize.height = totalHeight;
     
-	[self setContentSize:CC_SIZE_PIXELS_TO_POINTS(tmpSize)];
+	[self setContentSize:CC_SIZE_SCALE(tmpSize, contentScale)];
 }
 
 #pragma mark LabelBMFont - CCLabelProtocol protocol
@@ -869,86 +874,6 @@ void FNTConfigRemoveCache( void )
 	
     if (update)
         [self updateLabel];
-}
-
-#pragma mark LabelBMFont - CCRGBAProtocol protocol
-
--(ccColor3B) color
-{
-	return _realColor;
-}
-
--(ccColor3B) displayedColor
-{
-	return _displayedColor;
-}
-
--(void) setColor:(ccColor3B)color
-{
-	_displayedColor = _realColor = color;
-	
-	if( _cascadeColorEnabled ) {
-		ccColor3B parentColor = ccWHITE;
-		if( [_parent conformsToProtocol:@protocol(CCRGBAProtocol)] && [(id<CCRGBAProtocol>)_parent isCascadeColorEnabled] )
-			parentColor = [(id<CCRGBAProtocol>)_parent displayedColor];
-		[self updateDisplayedColor:parentColor];
-	}
-}
-
--(GLubyte) opacity
-{
-	return _realOpacity;
-}
-
--(GLubyte) displayedOpacity
-{
-	return _displayedOpacity;
-}
-
-/** Override synthesized setOpacity to recurse items */
-- (void) setOpacity:(GLubyte)opacity
-{
-	_displayedOpacity = _realOpacity = opacity;
-
-	if( _cascadeOpacityEnabled ) {
-		GLubyte parentOpacity = 255;
-		if( [_parent conformsToProtocol:@protocol(CCRGBAProtocol)] && [(id<CCRGBAProtocol>)_parent isCascadeOpacityEnabled] )
-			parentOpacity = [(id<CCRGBAProtocol>)_parent displayedOpacity];
-		[self updateDisplayedOpacity:parentOpacity];
-	}
-}
-
--(void) setOpacityModifyRGB:(BOOL)modify
-{
-	_opacityModifyRGB = modify;
-    
-    for (id<CCRGBAProtocol> child in _children)
-        [child setOpacityModifyRGB:modify];
-}
-
--(BOOL) doesOpacityModifyRGB
-{
-	return _opacityModifyRGB;
-}
-
-- (void)updateDisplayedOpacity:(GLubyte)parentOpacity
-{
-	_displayedOpacity = _realOpacity * parentOpacity/255.0;
-
-    for (CCSprite* item in _children) {
-		[item updateDisplayedOpacity:_displayedOpacity];
-	}
-}
-
-- (void)updateDisplayedColor:(ccColor3B)parentColor
-{
-	_displayedColor.r = _realColor.r * parentColor.r/255.0;
-	_displayedColor.g = _realColor.g * parentColor.g/255.0;
-	_displayedColor.b = _realColor.b * parentColor.b/255.0;
-
-	for (CCSprite* item in _children) {
-		[item updateDisplayedColor:_displayedColor];
-	}
 }
 
 #pragma mark LabelBMFont - AnchorPoint

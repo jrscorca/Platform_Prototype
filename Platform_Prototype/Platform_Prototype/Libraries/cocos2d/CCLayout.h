@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2013 Apportable Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +25,25 @@
 
 #import "CCNode.h"
 
-@interface CCLayout : CCNode
-{
+/**
+ *  A layout will take control of its childrens' positions. Any node added as a child will be position according to the rules of the specific layout type. If you are using a layout you should not set the position of the children manually.
+ 
+ ### Subclassing
+ 
+ CCLayout is an abstract super class of all layouts. You should subclass this class and implement the layout method if you want to create your own layout.
+ */
+@interface CCLayout : CCNode {
     BOOL _needsLayout;
 }
 
+/**
+ *  Called whenever the node needs to layout its children again. Normally, there is no need to call this method directly.
+ */
 - (void) needsLayout;
+
+/**
+ *  The layout method layouts the children according to the rules of the specific layout.
+ */
 - (void) layout;
 
 @end

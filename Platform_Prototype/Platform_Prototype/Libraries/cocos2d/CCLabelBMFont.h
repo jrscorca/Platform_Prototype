@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2008-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,12 +35,12 @@
  created with an external editor. Each character in the label is represented by a
  CCSprite and can be accessed through the children property.
  
- CCLabelBMFont has the flexibility of CCLabel, the speed of CCLabelAtlas and all the features of CCSprite.  If in doubt, use CCLabelBMFont instead of CCLabelAtlas / CCLabel.
+ CCLabelBMFont has the flexibility of CCLabel and all the features and performance of CCSprite.
  
  ### Notes
  
  - All inner characters are using an anchorPoint of (0.5f, 0.5f) and it is not recommend to change it
- because it might affect the rendering
+ because it might affect the rendering.
  
  ### Supported editors
  
@@ -50,7 +51,7 @@
  
  */
 
-@interface CCLabelBMFont : CCSpriteBatchNode <CCLabelProtocol, CCRGBAProtocol> {
+@interface CCLabelBMFont : CCSpriteBatchNode <CCLabelProtocol> {
     
 	// The text displayed by the label.
 	NSString *_string;
@@ -71,12 +72,6 @@
 	CCBMFontConfiguration	*_configuration;
     
 	// Texture RGBA settings.
-	GLubyte		_displayedOpacity;
-    GLubyte     _realOpacity;
-	ccColor3B	_displayedColor;
-    ccColor3B   _realColor;
-	BOOL		_cascadeOpacityEnabled;
-    BOOL        _cascadeColorEnabled;
 	BOOL		_opacityModifyRGB;
 
     // Offset of the texture atlas.
@@ -98,10 +93,10 @@
 @property (nonatomic,strong) NSString* fntFile;
 
 /** The opacity of the text. */
-@property (nonatomic,readwrite) GLubyte opacity;
+@property (nonatomic,readwrite) CGFloat opacity;
 
 /** The color of the text. */
-@property (nonatomic,readwrite) ccColor3B color;
+@property (nonatomic,strong) CCColor* color;
 
 
 /// -----------------------------------------------------------------------
@@ -196,7 +191,7 @@
  *  @param fntFile Label font file.
  *  @param width   Label maximum width.
  *  @param alignment Horizontal text alignment.
- *  @param offset Glyph offset on the font texture
+ *  @param offset Glyph offset on the font texture.
  *
  *  @return An initialized CCLabelBMFont Object.
  */

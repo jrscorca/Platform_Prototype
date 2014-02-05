@@ -2,8 +2,8 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2008 Radu Gruian
- *
  * Copyright (c) 2011 Vit Valentin
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -276,9 +276,9 @@ inline CGPoint CCCardinalSplineAt( CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p
 }
 @end
 
-#pragma mark - CCCardinalSplineBy
+#pragma mark - CCActionCardinalSplineBy
 
-@implementation CCCardinalSplineBy
+@implementation CCActionCardinalSplineBy
 
 -(void) startWithTarget:(id)target
 {

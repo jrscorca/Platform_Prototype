@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -115,14 +116,16 @@ int compareInts (const void * a, const void * b);
 		// mapInfo
 		_mapTileSize = mapInfo.tileSize;
 		_layerOrientation = mapInfo.orientation;
-
+		
+		CGFloat pixelsToPoints = 1.0/tex.contentScale;
+		
 		// offset (after layer orientation is set);
 		CGPoint offset = [self calculateLayerOffset:layerInfo.offset];
-		[self setPosition:CC_POINT_PIXELS_TO_POINTS(offset)];
+		[self setPosition:ccpMult(offset, pixelsToPoints)];
 
 		_atlasIndexArray = [[NSMutableArray alloc] initWithCapacity:totalNumberOfTiles];
 
-		[self setContentSize:CC_SIZE_PIXELS_TO_POINTS(CGSizeMake( _layerSize.width * _mapTileSize.width, _layerSize.height * _mapTileSize.height ))];
+		[self setContentSize:CGSizeMake( _layerSize.width * _mapTileSize.width * pixelsToPoints, _layerSize.height * _mapTileSize.height * pixelsToPoints )];
 
 		_useAutomaticVertexZ= NO;
 		_vertexZvalue = 0;
@@ -271,12 +274,11 @@ int compareInts (const void * a, const void * b);
 		int z = pos.x + pos.y * _layerSize.width;
 
         NSString* zStr = [NSString stringWithFormat:@"%d",z];
-		tile = (CCSprite*) [self getChildByName:zStr];
+		tile = (CCSprite*) [self getChildByName:zStr recursively:NO];
 
 		// tile not created yet. create it
 		if( ! tile ) {
-			CGRect rect = [_tileset rectForGID:gid];
-			rect = CC_RECT_PIXELS_TO_POINTS(rect);
+			CGRect rect = CC_RECT_SCALE([_tileset rectForGID:gid], 1.0/self.textureAtlas.texture.contentScale);
 			tile = [[CCSprite alloc] initWithTexture:self.texture rect:rect];
 			[tile setBatchNode:self];
 
@@ -284,7 +286,7 @@ int compareInts (const void * a, const void * b);
             [tile setPosition:p];
 			[tile setVertexZ: [self vertexZForPos:pos]];
 			tile.anchorPoint = CGPointZero;
-			[tile setOpacity:_opacity];
+			[tile setOpacity:_opacity/255.0];
 
 			NSUInteger indexForZ = [self atlasIndexForExistantZ:z];
 			[self addSpriteWithoutQuad:tile z:indexForZ name:zStr];
@@ -323,7 +325,7 @@ int compareInts (const void * a, const void * b);
 	[sprite setPosition: [self positionAt:pos]];
 	[sprite setVertexZ: [self vertexZForPos:pos]];
 	//sprite.anchorPoint = CGPointZero; // was the default
-	[sprite setOpacity:_opacity];
+	[sprite setOpacity:_opacity/255.0];
 	
 	//issue 1264, flip can be undone as well
 	sprite.flipX = NO;
@@ -379,8 +381,7 @@ int compareInts (const void * a, const void * b);
 
 -(CCSprite*) insertTileForGID:(uint32_t)gid at:(CGPoint)pos
 {
-	CGRect rect = [_tileset rectForGID:gid];
-	rect = CC_RECT_PIXELS_TO_POINTS(rect);
+	CGRect rect = CC_RECT_SCALE([_tileset rectForGID:gid], 1.0/self.textureAtlas.texture.contentScale);
 
 	NSInteger z = pos.x + pos.y * _layerSize.width;
 
@@ -411,8 +412,7 @@ int compareInts (const void * a, const void * b);
 
 -(CCSprite*) updateTileForGID:(uint32_t)gid at:(CGPoint)pos
 {
-	CGRect rect = [_tileset rectForGID:gid];
-	rect = CC_RECT_PIXELS_TO_POINTS(rect);
+	CGRect rect = CC_RECT_SCALE([_tileset rectForGID:gid], 1.0/self.textureAtlas.texture.contentScale);
 
 	int z = pos.x + pos.y * _layerSize.width;
 
@@ -436,8 +436,7 @@ int compareInts (const void * a, const void * b);
 // since lot's of assumptions are no longer true
 -(CCSprite*) appendTileForGID:(uint32_t)gid at:(CGPoint)pos
 {
-	CGRect rect = [_tileset rectForGID:gid];
-	rect = CC_RECT_PIXELS_TO_POINTS(rect);
+	CGRect rect = CC_RECT_SCALE([_tileset rectForGID:gid], 1.0/self.textureAtlas.texture.contentScale);
 
 	NSInteger z = pos.x + pos.y * _layerSize.width;
 
@@ -471,7 +470,7 @@ int compareInts (const void * a, const void * b)
 -(NSUInteger) atlasIndexForExistantZ:(NSUInteger)z
 {
     NSUInteger indexResult = [_atlasIndexArray
-                              indexOfObject:[NSNumber numberWithInt:z]
+                              indexOfObject:[NSNumber numberWithInt:(int) z]
                               inSortedRange:NSMakeRange(0, [_atlasIndexArray count])
                               options:0
                               usingComparator:^(id a, id b) {
@@ -530,10 +529,9 @@ int compareInts (const void * a, const void * b)
 
 			int z = pos.x + pos.y * _layerSize.width;
             NSString* zStr = [NSString stringWithFormat:@"%d", z];
-			CCSprite *sprite = (CCSprite*)[self getChildByName:zStr];
+			CCSprite *sprite = (CCSprite*)[self getChildByName:zStr recursively:NO];
 			if( sprite ) {
-				CGRect rect = [_tileset rectForGID:gid];
-				rect = CC_RECT_PIXELS_TO_POINTS(rect);
+			CGRect rect = CC_RECT_SCALE([_tileset rectForGID:gid], 1.0/self.textureAtlas.texture.contentScale);
 
 				[sprite setTextureRect:rect rotated:NO untrimmedSize:rect.size];
 
@@ -587,7 +585,7 @@ int compareInts (const void * a, const void * b)
 
 		// remove it from sprites and/or texture atlas
         NSString* zStr = [NSString stringWithFormat:@"%d", (int)z];
-		id sprite = [self getChildByName:zStr];
+		id sprite = [self getChildByName:zStr recursively:NO];
 		if( sprite )
 			[super removeChild:sprite cleanup:YES];
 		else {
@@ -640,8 +638,7 @@ int compareInts (const void * a, const void * b)
 			break;
 	}
 
-	ret = CC_POINT_PIXELS_TO_POINTS( ret );
-	return ret;
+	return ccpMult(ret, 1.0/self.textureAtlas.texture.contentScale);
 }
 
 -(CGPoint) positionForOrthoAt:(CGPoint)pos

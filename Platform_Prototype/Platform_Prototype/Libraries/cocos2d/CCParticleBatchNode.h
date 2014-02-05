@@ -2,11 +2,10 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (C) 2009 Matt Oswald
- *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- *
  * Copyright (c) 2011 Marco Tillemans
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +30,7 @@
 #import "CCNode.h"
 
 @class CCTextureAtlas;
-@class CCParticleSystem;
+@class CCParticleSystemBase;
 
 /**
  *  This extension disables lazy z-ordering.
@@ -46,7 +45,7 @@
  
  ### Limitations
  
- - Currently only CCParticleSystemQuad is supported.
+ - Only CCParticleSystem is supported.
  - All particle systems need to be drawn with the same parameters, blend function, aliasing and texture.
  
  ### Notes
@@ -56,7 +55,6 @@
  - Default capacity is 500.
 
  */
-
 @interface CCParticleBatchNode : CCNode <CCTextureProtocol> {
 
 	CCTextureAtlas	*_textureAtlas;
@@ -155,7 +153,7 @@
  *  @param z     Z Order.
  *  @param aTag  Tag.
  */
--(void) addChild:(CCParticleSystem*)child z:(NSInteger)z tag:(NSInteger) aTag;
+-(void) addChild:(CCParticleSystemBase*)child z:(NSInteger)z tag:(NSInteger) aTag;
 
 /**
  *  Inserts a particle system to the batch node.
@@ -163,7 +161,7 @@
  *  @param pSystem Particle System.
  *  @param index   Index Position.
  */
--(void) insertChild:(CCParticleSystem*) pSystem inAtlasAtIndex:(NSUInteger)index;
+-(void) insertChild:(CCParticleSystemBase*) pSystem inAtlasAtIndex:(NSUInteger)index;
 
 /**
  *  Remove the specified particle system from the batch node.
@@ -171,7 +169,7 @@
  *  @param pSystem   Particle System.
  *  @param doCleanUp Perform cleanup.
  */
--(void) removeChild:(CCParticleSystem*) pSystem cleanup:(BOOL)doCleanUp;
+-(void) removeChild:(CCParticleSystemBase*) pSystem cleanup:(BOOL)doCleanUp;
 
 /** Disables a particle by inserting a 0'd quad into the texture atlas */
 

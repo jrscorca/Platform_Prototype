@@ -24,54 +24,107 @@
 
 #import "CCPhysicsBody.h"
 
-
+/**
+CCPhysicsJoints hold two CCPhysicsBodies together in some way like a joint between bones or a hinge on a door. Joints work in a fairly automatic fashion.
+They are active from the moment they are created. When you are done with a joint you invalidate it in order to disable it.
+Joints cannot be reactivated once they are invalidated.
+ */
 @interface CCPhysicsJoint : NSObject
 
-/// Connect a pivot joint between the two bodies.
-/// The pivot point is specified in the coordinates of the node that bodyA is attached to.
+
+/// -----------------------------------------------------------------------
+/// @name Creating a CCPhysicsJoint Object
+/// -----------------------------------------------------------------------
+
+/**
+*  Creates and returns a pivot joint object between the two bodies specified. The pivot point is specified in the coordinates of the node that bodyA is attached to.
+*
+*  @param bodyA   Body A.
+*  @param bodyB   Body B.
+*  @param anchorA Anchor point A.
+*
+*  @return The CCPhysicsJoint Object.
+*/
 +(CCPhysicsJoint *)connectedPivotJointWithBodyA:(CCPhysicsBody *)bodyA bodyB:(CCPhysicsBody *)bodyB anchorA:(CGPoint)anchorA;
 
-/// Connect a joint between the two bodies that keeps the distance of the two anchor points constant.
-/// The anchor points are specified in the coordinates of the node that the bodies are attached to.
-/// The distance is calculated when the joint becomes active.
+/**
+ *  Creates and returns a pivot joint between the two bodies and keeps the distance of the two anchor points constant.
+ *  The anchor points are specified in the coordinates of the node that the bodies are attached to.
+ *  The distance between the anchor points will be calculated when the joint first becomes active.
+ *
+ *  @param bodyA   Body A.
+ *  @param bodyB   Body B.
+ *  @param anchorA Anchor point A.
+ *  @param anchorB Anchor point B.
+ *
+ *  @return The CCPhysicsJoint Object.
+ */
 +(CCPhysicsJoint *)connectedDistanceJointWithBodyA:(CCPhysicsBody *)bodyA bodyB:(CCPhysicsBody *)bodyB
 	anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB;
 
-/// Connect a joint between the two bodies that keeps the distance of the two anchor points within a range.
-/// The anchor points are specified in the coordinates of the node that the bodies are attached to.
+/**
+ *  Creates and returns a pivot joint between the two bodies and keeps the distance of the two anchor points within the range.
+ *  The anchor points are specified in the coordinates of the node that the bodies are attached to.
+ *
+ *  @param bodyA   Body A.
+ *  @param bodyB   Body B.
+ *  @param anchorA Anchor point A.
+ *  @param anchorB Anchor point B.
+ *  @param min     The minimum distance to allow between the anchor points.
+ *  @param max     The maximum distance to allow between the anchor points.
+ *
+ *  @return The CCPhysicsJoint Object.
+ */
 +(CCPhysicsJoint *)connectedDistanceJointWithBodyA:(CCPhysicsBody *)bodyA bodyB:(CCPhysicsBody *)bodyB
 	anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB
 	minDistance:(CGFloat)min maxDistance:(CGFloat)max;
 
-/// Connect a spring between the two bodies at the specified anchor points.
-/// The anchor points are specified in the coordinates of the node that the bodies are attached to.
+/**
+ *  Creates and returns a spring joint between the two bodies at the specified anchor points.  The anchor points are specicied in the coordinates of the node that he bodies are attached to.
+ *
+ *  @param bodyA   Body A.
+ *  @param bodyB   Body B.
+ *  @param anchorA Anchor point A.
+ *  @param anchorB Anchor point B.
+ *  @param restLength Rest Length.
+ *  @param stiffness  Spring stiffness.
+ *  @param damping    Sprin damping.
+ *
+ *  @return The CCPhysicsJoint Object.
+ */
 +(CCPhysicsJoint *)connectedSpringJointWithBodyA:(CCPhysicsBody *)bodyA bodyB:(CCPhysicsBody *)bodyB
 	anchorA:(CGPoint)anchorA anchorB:(CGPoint)anchorB
 	restLength:(CGFloat)restLength stiffness:(CGFloat)stiffness damping:(CGFloat)damping;
 
-/// The first body this joint is attached to.
-@property(nonatomic, strong) CCPhysicsBody *bodyA;
-/// The second body this joint is attached to.
-@property(nonatomic, strong) CCPhysicsBody *bodyB;
+/// -----------------------------------------------------------------------
+/// @name Accessing Physics Joint Attributes
+/// -----------------------------------------------------------------------
 
-/// The maximum force this joint is allowed to use.
-/// Defaults to INFINITY.
+/** The first body this joint is attached to. */
+@property(nonatomic, readonly) CCPhysicsBody *bodyA;
+
+/** The second body this joint is attached to. */
+@property(nonatomic, readonly) CCPhysicsBody *bodyB;
+
+/** Maxium foce this joint is allowed to use. Defaults to INFINITY. */
 @property(nonatomic, assign) CGFloat maxForce;
 
-/// Whether not the connected bodies are allowed to collide with one another.
-/// Defaults to YES.
+/** Whether or not the connected bodies are allowed to collide with each other. Defaults to YES. */
 @property(nonatomic, assign) BOOL collideBodies;
 
-/// Depending on the joint, either the magnitude of the linear or angular impulse that this joint applied on the previous fixed time step.
+/** Depending on the joint, either the magnitude of the linear or angular impulse that this joint applied on the previous fixed time step. */
 @property(nonatomic, readonly) CGFloat impulse;
 
-// Removed due to lack of time before the 3.0 release.
-///// Maximum force that can be applied before the joint disables itself.
-///// To avoid problems with round-off errors, make sure that this value is lower than CCPhysicsJoint.maxForce.
-///// Defaults to INFINITY.
-//@property(nonatomic, assign) CGFloat breakingForce;
+/**
+ *  Maximum force that can be applied before the joint disables itself. Defaults to INFINITY
+ *  To avoid problems with solver accuracy, make sure that this value is lower than CCPhysicsJoint.maxForce.
+ */
+@property(nonatomic, assign) CGFloat breakingForce;
 
-/// Disable the joint and remove it from the simulation.
+/** Check if the joint is still valid and active. */
+@property(nonatomic, readonly) BOOL valid;
+
+/** Disable the joint and remove it from the simulation. */
 -(void)invalidate;
 
 @end

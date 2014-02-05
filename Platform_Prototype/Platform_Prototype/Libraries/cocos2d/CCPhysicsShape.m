@@ -32,8 +32,9 @@
 #define DEFAULT_ELASTICITY 0.2
 
 
-// TODO temporary
-static inline void NYI(){@throw @"Not Yet Implemented";}
+@interface CCNode()
+-(CGAffineTransform)nonRigidTransform;
+@end
 
 
 @interface CCPhysicsCircleShape : CCPhysicsShape
@@ -80,33 +81,31 @@ static inline void NYI(){@throw @"Not Yet Implemented";}
 	return [[CCPhysicsPolyShape alloc] initWithPolygonFromPoints:points count:count cornerRadius:cornerRadius];
 }
 
-// Removed since the transform cannot be calculated until after the node enters an active scene.
-//-(cpTransform)shapeTransform
-//{
-//	// TODO Might be better to use the physics relative transform.
-//	// That's not available until the scene is set up though... hrm.
-//	CCNode *node = self.node;
-//	if(node){
-//		return [node nonRigidTransform];
-//	} else {
-//		return CGAffineTransformIdentity;
-//	}
-//}
-//
-//static cpFloat
-//Determinant(cpTransform t)
-//{
-//	return (t.a*t.d - t.c*t.b);
-//}
+-(cpTransform)shapeTransform
+{
+	// TODO Might be better to use the physics relative transform.
+	// That's not available until the scene is set up though... hrm.
+	CCNode *node = self.node;
+	if(node){
+		return [node nonRigidTransform];
+	} else {
+		return CGAffineTransformIdentity;
+	}
+}
+
+static cpFloat
+Determinant(cpTransform t)
+{
+	return (t.a*t.d - t.c*t.b);
+}
 
 -(CGFloat)mass {return self.shape.mass;}
 -(void)setMass:(CGFloat)mass {self.shape.mass = mass;}
 
-// See [CCPhysicsShape shapeTransform] for why this is removed.
-//-(CGFloat)density {return self.shape.density/Determinant(self.shapeTransform);}
-//-(void)setDensity:(CGFloat)density {self.shape.density = density*Determinant(self.shapeTransform);}
-//
-//-(CGFloat)area {return self.shape.area*Determinant(self.shapeTransform);}
+-(CGFloat)density {return 1e3*self.shape.density/Determinant(self.shapeTransform);}
+-(void)setDensity:(CGFloat)density {self.shape.density = 1e-3*density*Determinant(self.shapeTransform);}
+
+-(CGFloat)area {return self.shape.area*Determinant(self.shapeTransform);}
 
 -(CGFloat)friction {return self.shape.friction;}
 -(void)setFriction:(CGFloat)friction {self.shape.friction = friction;}
@@ -318,7 +317,7 @@ RadiusForTransform(CGAffineTransform t)
 -(id)initWithPolygonFromPoints:(CGPoint *)points count:(NSUInteger)count cornerRadius:(CGFloat)cornerRadius
 {
 	if((self = [super init])){
-		_shape = [ChipmunkPolyShape polyWithBody:nil count:count verts:points transform:cpTransformIdentity radius:cornerRadius];
+		_shape = [ChipmunkPolyShape polyWithBody:nil count:(int)count verts:points transform:cpTransformIdentity radius:cornerRadius];
 		_radius = cornerRadius;
 		_points = calloc(count, sizeof(CGPoint));
 		memcpy(_points, points, count*sizeof(CGPoint));
@@ -357,7 +356,7 @@ RadiusForTransform(CGAffineTransform t)
 {
 	cpShape *shape = self.shape.shape;
 	cpPolyShapeSetRadius(shape, _radius*RadiusForTransform(transform));
-	cpPolyShapeSetVerts(shape, _count, _points, transform);
+	cpPolyShapeSetVerts(shape, (int)_count, _points, transform);
 }
 
 @end

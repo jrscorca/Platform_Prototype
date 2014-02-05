@@ -1,4 +1,4 @@
-/* Copyright (c) 2007 Scott Lembcke
+/* Copyright (c) 2013 Scott Lembcke and Howling Moon Software
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
- 
+
 #include <string.h>
 
 #include "chipmunk/chipmunk_private.h"
@@ -31,7 +31,7 @@ cpArrayNew(int size)
 	
 	arr->num = 0;
 	arr->max = (size ? size : 4);
-	arr->arr = (void **)cpcalloc(arr->max, sizeof(void**));
+	arr->arr = (void **)cpcalloc(arr->max, sizeof(void*));
 	
 	return arr;
 }
@@ -52,7 +52,7 @@ cpArrayPush(cpArray *arr, void *object)
 {
 	if(arr->num == arr->max){
 		arr->max *= 2;
-		arr->arr = (void **)cprealloc(arr->arr, arr->max*sizeof(void**));
+		arr->arr = (void **)cprealloc(arr->arr, arr->max*sizeof(void*));
 	}
 	
 	arr->arr[arr->num] = object;

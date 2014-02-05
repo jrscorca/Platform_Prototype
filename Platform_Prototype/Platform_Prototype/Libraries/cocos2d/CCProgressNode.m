@@ -2,6 +2,7 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (c) 2010 Lam Pham
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +34,6 @@
 #import "CCDirector.h"
 #import "Support/CGPointExtension.h"
 #import "Support/TransformUtils.h"
-#import "CCDrawingPrimitives.h"
 #import "CCSprite_Private.h"
 
 #import "CCNode_Private.h"
@@ -157,24 +157,24 @@ const char kCCProgressTextureCoords = 0x4b;
 	}
 }
 
--(void)setColor:(ccColor3B)c
+-(void)setColor:(CCColor*)c
 {
 	_sprite.color = c;
 	[self updateColor];
 }
 
--(ccColor3B)color
+-(CCColor*)color
 {
 	return _sprite.color;
 }
 
--(void)setOpacity:(GLubyte)o
+-(void)setOpacity:(CGFloat)o
 {
 	_sprite.opacity = o;
 	[self updateColor];
 }
 
--(GLubyte)opacity
+-(CGFloat)opacity
 {
 	return _sprite.opacity;
 }

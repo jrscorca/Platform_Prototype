@@ -2,11 +2,10 @@
  * cocos2d for iPhone: http://www.cocos2d-iphone.org
  *
  * Copyright (C) 2009 Matt Oswald
- *
  * Copyright (c) 2009-2010 Ricardo Quesada
  * Copyright (c) 2011 Zynga Inc.
- *
  * Copyright (c) 2011 Marco Tillemans
+ * Copyright (c) 2013-2014 Cocos2D Authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,8 +33,7 @@
 #import "ccConfig.h"
 #import "ccMacros.h"
 #import "Support/CGPointExtension.h"
-#import "CCParticleSystem.h"
-#import "CCParticleSystem.h"
+#import "CCParticleSystemBase.h"
 #import "CCShaderCache.h"
 #import "CCGLProgram.h"
 #import "ccGLStateCache.h"
@@ -47,7 +45,7 @@
 #import "kazmath/GL/matrix.h"
 
 #import "CCNode_Private.h"
-#import "CCParticleSystem_Private.h"
+#import "CCParticleSystemBase_Private.h"
 
 #import "CCTexture_Private.h"
 
@@ -158,10 +156,10 @@
 }
 
 // override addChild:
--(void) addChild:(CCParticleSystem*)child z:(NSInteger)z tag:(NSInteger) aTag
+-(void) addChild:(CCParticleSystemBase*)child z:(NSInteger)z tag:(NSInteger) aTag
 {
 	NSAssert( child != nil, @"Argument must be non-nil");
-	NSAssert( [child isKindOfClass:[CCParticleSystem class]], @"CCParticleBatchNode only supports CCQuadParticleSystems as children");
+	NSAssert( [child isKindOfClass:[CCParticleSystemBase class]], @"CCParticleBatchNode only supports CCQuadParticleSystems as children");
 	NSAssert( child.texture.name == _textureAtlas.texture.name, @"CCParticleSystem is not using the same texture id");
 
 	// If this is the 1st children, then copy blending function
@@ -217,7 +215,7 @@
 }
 
 // Reorder will be done in this function, no "lazy" reorder to particles
--(void) reorderChild:(CCParticleSystem*)child z:(NSInteger)z
+-(void) reorderChild:(CCParticleSystemBase*)child z:(NSInteger)z
 {
 	NSAssert( child != nil, @"Child must be non-nil");
 	NSAssert( [_children containsObject:child], @"Child doesn't belong to batch" );
@@ -248,7 +246,7 @@
 			// Find new AtlasIndex
 			NSUInteger newAtlasIndex = 0;
 			for( NSUInteger i=0;i < [_children count];i++) {
-				CCParticleSystem *node = [_children objectAtIndex:i];
+				CCParticleSystemBase *node = [_children objectAtIndex:i];
 				if( node == child ) {
 					newAtlasIndex = [child atlasIndex];
 					break;
@@ -320,7 +318,7 @@
 }
 
 // override removeChild:
--(void)removeChild: (CCParticleSystem*) child cleanup:(BOOL)doCleanup
+-(void)removeChild: (CCParticleSystemBase*) child cleanup:(BOOL)doCleanup
 {
 	// explicit nil handling
 	if (child == nil)
@@ -344,7 +342,7 @@
 
 -(void)removeChildAtIndex:(NSUInteger)index cleanup:(BOOL) doCleanup
 {
-	[self removeChild:(CCParticleSystem *)[_children objectAtIndex:index] cleanup:doCleanup];
+	[self removeChild:(CCParticleSystemBase *)[_children objectAtIndex:index] cleanup:doCleanup];
 }
 
 -(void)removeAllChildrenWithCleanup:(BOOL)doCleanup
@@ -398,7 +396,7 @@
 #pragma mark CCParticleBatchNode - add / remove / reorder helper methods
 
 // add child helper
--(void) insertChild:(CCParticleSystem*) pSystem inAtlasAtIndex:(NSUInteger)index
+-(void) insertChild:(CCParticleSystemBase*) pSystem inAtlasAtIndex:(NSUInteger)index
 {
 	pSystem.atlasIndex = index;
 
@@ -425,7 +423,7 @@
 {
 	NSUInteger index = 0;
 
-    for (CCParticleSystem *child in _children)
+    for (CCParticleSystemBase *child in _children)
 	{
 		child.atlasIndex = index;
 		index += child.totalParticles;

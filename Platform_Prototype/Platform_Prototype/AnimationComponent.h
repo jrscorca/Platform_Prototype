@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Joshua Scorca. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "cocos2d.h"
 #import "Component.h"
 @class Character;
